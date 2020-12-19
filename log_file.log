@@ -1,0 +1,4 @@
+%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s
+%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s
+2020-12-19 17:58:23,989 — __main__ — INFO — <module>:11 — {'current_weather_cond_capitals': 'http://servicos.cptec.inpe.br/XML/capitais/condicoesAtuais.xml'}
+2020-12-19 17:58:25,220 — __main__ — INFO — <module>:17 — Done
