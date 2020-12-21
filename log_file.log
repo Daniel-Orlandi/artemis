@@ -1,4 +1,49 @@
-%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s
-%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s
-2020-12-19 17:58:23,989 — __main__ — INFO — <module>:11 — {'current_weather_cond_capitals': 'http://servicos.cptec.inpe.br/XML/capitais/condicoesAtuais.xml'}
-2020-12-19 17:58:25,220 — __main__ — INFO — <module>:17 — Done
+2020-12-21 17:08:12,762 — __main__ — INFO — <module>:11 — {'current_weather_cond_capitals': 'http://servicos.cptec.inpe.br/XML/capitais/condicoesAtuais.xml'}
+2020-12-21 17:08:13,023 — __main__ — INFO — <module>:17 — Done
+2020-12-21 17:30:13,343 — __main__ — INFO — <module>:11 — {'current_weather_cond_capitals': 'http://servicos.cptec.inpe.br/XML/capitais/condicoesAtuais.xml'}
+2020-12-21 17:30:13,344 — __main__ — INFO — <module>:17 — Done
+2020-12-21 17:37:40,143 — __main__ — INFO — <module>:11 — {'current_weather_cond_capitals': 'http://servicos.cptec.inpe.br/XML/capitais/condicoesAtuais.xml'}
+2020-12-21 17:37:40,144 — __main__ — INFO — <module>:17 — Done
+2020-12-21 17:41:17,262 — __main__ — INFO — <module>:11 — {'current_weather_cond_capitals': 'http://servicos.cptec.inpe.br/XML/capitais/condicoesAtuais.xml'}
+2020-12-21 17:41:17,264 — __main__ — INFO — <module>:17 — Done
+2020-12-21 17:44:42,923 — __main__ — INFO — <module>:11 — {'current_weather_cond_capitals': 'http://servicos.cptec.inpe.br/XML/capitais/condicoesAtuais.xml'}
+2020-12-21 17:44:42,924 — __main__ — INFO — <module>:17 — Done
+2020-12-21 17:48:36,307 — __main__ — INFO — <module>:11 — {'current_weather_cond_capitals': 'http://servicos.cptec.inpe.br/XML/capitais/condicoesAtuais.xml'}
+2020-12-21 17:48:36,308 — __main__ — INFO — <module>:17 — Done
+2020-12-21 17:49:08,342 — __main__ — INFO — <module>:11 — {'current_weather_cond_capitals': 'http://servicos.cptec.inpe.br/XML/capitais/condicoesAtuais.xml'}
+2020-12-21 17:49:08,343 — __main__ — INFO — <module>:17 — Done
+2020-12-21 17:54:32,816 — __main__ — INFO — <module>:12 — {'current_weather_cond_capitals': 'http://servicos.cptec.inpe.br/XML/capitais/condicoesAtuais.xml'}
+2020-12-21 17:54:32,818 — api.data_getter — INFO — get_data_async:38 — Getting data.
+2020-12-21 17:54:32,818 — api.data_getter — ERROR — get_data_async:64 — Ops Something Else: 'CptecApiSuite' object has no attribute 'items'
+2020-12-21 17:54:32,819 — __main__ — INFO — <module>:18 — Done
+2020-12-21 17:56:33,735 — __main__ — INFO — <module>:12 — {'current_weather_cond_capitals': 'http://servicos.cptec.inpe.br/XML/capitais/condicoesAtuais.xml'}
+2020-12-21 17:56:51,978 — api.data_getter — INFO — get_data_async:38 — Getting data.
+2020-12-21 17:56:51,979 — api.data_getter — ERROR — get_data_async:64 — Ops Something Else: 'CptecApiSuite' object has no attribute 'items'
+2020-12-21 17:56:52,593 — __main__ — INFO — <module>:18 — Done
+2020-12-21 17:57:03,853 — __main__ — INFO — <module>:12 — {'current_weather_cond_capitals': 'http://servicos.cptec.inpe.br/XML/capitais/condicoesAtuais.xml'}
+2020-12-21 17:59:08,953 — api.data_getter — INFO — get_data_async:38 — Getting data.
+2020-12-21 17:59:09,372 — api.data_getter — ERROR — get_data_async:64 — Ops Something Else: An asyncio.Future, a coroutine or an awaitable is required
+2020-12-21 17:59:17,480 — api.data_getter — INFO — get_data_async:38 — Getting data.
+2020-12-21 17:59:17,863 — api.data_getter — ERROR — get_data_async:64 — Ops Something Else: An asyncio.Future, a coroutine or an awaitable is required
+2020-12-21 18:12:03,930 — api.data_getter — ERROR — get_data_async:64 — Ops Something Else: An asyncio.Future, a coroutine or an awaitable is required
+2020-12-21 18:12:03,934 — __main__ — INFO — <module>:18 — Done
+2020-12-21 18:14:16,927 — api.data_getter — ERROR — get_data_async:69 — Ops Something Else: An asyncio.Future, a coroutine or an awaitable is required
+2020-12-21 18:15:05,805 — api.data_getter — ERROR — get_data_async:69 — Ops Something Else: unhashable type: 'dict'
+2020-12-21 18:15:42,819 — api.data_getter — ERROR — get_data_async:69 — Ops Something Else: An asyncio.Future, a coroutine or an awaitable is required
+2020-12-21 18:16:59,013 — api.data_getter — ERROR — get_data_async:69 — Ops Something Else: append() takes exactly one argument (2 given)
+2020-12-21 18:17:13,071 — api.data_getter — ERROR — get_data_async:69 — Ops Something Else: unhashable type: 'list'
+2020-12-21 18:24:01,520 — api.data_getter — ERROR — get_data_async:69 — Ops Something Else: unhashable type: 'list'
+2020-12-21 18:25:13,778 — api.data_getter — ERROR — get_data_async:69 — Ops Something Else: unhashable type: 'list'
+2020-12-21 18:25:37,298 — api.data_getter — ERROR — get_data_async:69 — Ops Something Else: unhashable type: 'list'
+2020-12-21 18:25:59,398 — api.data_getter — ERROR — get_data_async:69 — Ops Something Else: unhashable type: 'list'
+2020-12-21 18:26:51,581 — api.data_getter — ERROR — get_data_async:69 — Ops Something Else: An asyncio.Future, a coroutine or an awaitable is required
+2020-12-21 18:42:56,058 — __main__ — INFO — <module>:18 — Done
+2020-12-21 19:25:55,064 — __main__ — INFO — <module>:18 — Done
+2020-12-21 19:26:05,760 — __main__ — INFO — <module>:18 — Done
+2020-12-21 19:27:18,945 — __main__ — INFO — <module>:20 — Done
+2020-12-21 19:27:44,797 — __main__ — INFO — <module>:20 — Done
+2020-12-21 19:29:55,944 — api.data_getter — ERROR — get_data:84 — Error: 'bytes' object is not callable
+2020-12-21 19:34:29,689 — api.data_getter — ERROR — get_data:84 — Error: 'bytes' object is not callable
+2020-12-21 19:39:42,554 — api.data_getter — ERROR — get_data:84 — Error: 'bytes' object is not callable
+2020-12-21 19:40:36,837 — __main__ — INFO — <module>:20 — Done
+2020-12-21 19:40:48,258 — __main__ — INFO — <module>:20 — Done
