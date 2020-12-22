@@ -15,6 +15,4 @@ getter = data_getter.Request(url_dict=data)
 
 asyncio.run(getter.get_data(method='a'))
 
-print(getter.url_dict)
-
 my_logger.info('Done')

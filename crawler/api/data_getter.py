@@ -14,12 +14,13 @@ class Request:
         self.url_dict = url_dict
         self.logger = data_logger.Logger().set_logger(__name__)
 
-    def sync_request(self, url):
+    def sync_request(self, key, url: str):
         try:
             with requests.Session() as session:
-                request = session.get(url)
-                request.raise_for_status()
-                return request.content
+                response = session.get(url)
+                response.raise_for_status()
+                self.url_dict[key] = response.content
+                return response.status_code
 
         except requests.exceptions.HTTPError as http_error:
             self.logger.error(f"Http Error: {http_error}")
@@ -33,12 +34,13 @@ class Request:
         except requests.exceptions.RequestException as general_error:
             self.logger.error(f"Ops Something Else: {general_error}")
 
-    async def async_request(self, url):
+    async def async_request(self, key, url: str) -> httpx.Response:
         try:
-            async with httpx.AsyncClient() as session:
-                request = await session.get(url)
-                request.raise_for_status()
-                return request.content
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url)
+                response.raise_for_status()
+                self.url_dict[key] = response.content
+                return response.status_code
 
         except httpx.ConnectError as connection_error:
             self.logger.error(f"Error Connecting:{connection_error}")
@@ -67,18 +69,21 @@ class Request:
     async def get_data(self, method='a'):
         try:
             if (isinstance(method, str) and method == 'a'):
+                self.logger.info("async mode selected.")
                 task_list = []
                 for key, value in self.url_dict.items():
-                    result = self.url_dict[key] = self.async_request(value)
+                    result = self.async_request(key, value)
                     task_list.append(result)
-
                 await asyncio.gather(*task_list)
 
             elif (isinstance(method, str) and method == 's'):
+                self.logger.info("async mode selected.")
                 for key, value in self.url_dict.items():
-                    result = self.url_dict[key] = self.sync_request(value)
+                    self.sync_request(key, value)
 
-                return result
+        except asyncio.CancelledError as error:
+            self.logger.error(f'Error: {error}')
+            raise error
 
         except Exception as error:
             self.logger.error(f'Error: {error}')
