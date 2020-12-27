@@ -2,7 +2,9 @@ import requests
 import httpx
 import asyncio
 
+import jxmlease
 from utils import data_logger
+from artemis.core import response_handler
 
 
 class Request:
@@ -12,7 +14,7 @@ class Request:
     ...
 
     Attributes
-    ----------
+    ---------- 
     url_dict: dict
         A dictionary where the key is a locale_id,
         and the value is the url to where the requisition will be made.
@@ -57,9 +59,15 @@ class Request:
             with requests.Session() as session:
                 response = session.get(url)
                 response.raise_for_status()
-                self.url_dict[key] = response.content
-                return response.status_code
+                self.url_dict[key] = response.content.json()
+                return response.status_code    
 
+        except AttributeError as atrb_error:
+            self.url_dict[key] = response_handler.xml_response(response.content) 
+            self.logger.warning(f"Warning: {atrb_error}, returning response as xml")
+            return response.status_code    
+
+        
         except requests.exceptions.HTTPError as http_error:
             self.logger.error(f"Http Error: {http_error}")
 
@@ -101,8 +109,13 @@ class Request:
             async with httpx.AsyncClient() as client:
                 response = await client.get(url)
                 response.raise_for_status()
-                self.url_dict[key] = response.content
+                self.url_dict[key] = response.content.json()
                 return response.status_code
+
+        except AttributeError as atrb_error:
+            self.url_dict[key] = response_handler.xml_response(response.content) 
+            self.logger.warning(f"Warning: {atrb_error}, returning response as xml")
+            return response.status_code    
 
         except httpx.ConnectError as connection_error:
             self.logger.error(f"Error Connecting:{connection_error}")

@@ -1,8 +1,9 @@
 import asyncio
 import time 
 
-from api import Request, response_handler
-from models.cptec import CptecApiSuite
+from artemis.core.request_engine import Request
+import artemis.core.response_handler as response_handler
+from artemis.models.cptec import CptecApiSuite
 from utils import data_logger
 
 start = time.perf_counter()

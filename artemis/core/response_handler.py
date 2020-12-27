@@ -7,4 +7,5 @@ def xml_response(response: str):
 
 
 def json_response(response: str):
-    return json.loads(response)
+    return json.loads(response)    
+    
