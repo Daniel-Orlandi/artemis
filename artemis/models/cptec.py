@@ -1,9 +1,12 @@
+from urllib.parse import urlparse
+
 from utils import data_logger
 
 
 class CptecApiSuite:
     def __init__(self, id_locale: list = None):
         self.__base_url = "http://servicos.cptec.inpe.br/XML"
+        self.hostname = urlparse(self.__base_url).hostname
         self.id_locale = id_locale
         self.logger = data_logger.Logger().set_logger(__name__)
 
@@ -26,10 +29,10 @@ class CptecApiSuite:
 
             for city_id in self.id_locale:
                 url = self.__base_url + forecast_url.format(city_id)
-                url_dict[city_id] = url
+                url_dict[str(city_id)] = url
                 self.logger.info(url)
                 
-            return url_dict
+            return {self.hostname:url_dict}
             
         except Exception as error:
             self.logger.error(f'Error: {error}')
@@ -40,4 +43,4 @@ class CptecApiSuite:
         url_dict = {}
         url = self.__base_url + forecast_url
         url_dict['current_weather_cond_capitals'] = url
-        return url_dict
+        return {self.hostname:url_dict}

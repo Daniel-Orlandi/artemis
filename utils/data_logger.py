@@ -40,7 +40,7 @@ class Logger:
             self.log_format = logging.Formatter(log_format)
         else:
             self.log_format = logging.Formatter(
-                "%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
+                "%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")        
 
     def __get_console_handler(self):
         console_handler = logging.StreamHandler(sys.stdout)

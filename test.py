@@ -1,8 +1,8 @@
 import asyncio
-import time 
-
-from artemis.core.request_engine import Request
+import time
+from urllib.parse import urlparse
 import artemis.core.response_handler as response_handler
+from artemis.core.http_engine import Request
 from artemis.models.cptec import CptecApiSuite
 from utils import data_logger
 
@@ -18,10 +18,9 @@ getter = Request(url_dict=url)
 
 asyncio.run(getter.get_data(method='a'))
 
-print(response_handler.xml_response(getter.url_dict[244]),
-      response_handler.xml_response(getter.url_dict[241]))
-
 my_logger.info('Done')
 
 end = time.perf_counter() - start
 print(end)
+
+
