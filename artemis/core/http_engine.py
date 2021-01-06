@@ -1,6 +1,7 @@
 import requests
 import httpx
 import asyncio
+from urllib.parse import urlparse
 
 import jxmlease
 from utils import data_logger
@@ -34,12 +35,16 @@ class Request:
         Responsible for orchestrate the requests.
     """
 
-    def __init__(self, data_dict: dict) -> None:        
+    def __init__(self, data_dict: dict) -> None:
         self.data_dict = data_dict
         self.logger = data_logger.Logger().set_logger(__name__)
 
     def get_data(self):
-        return self.data_dict        
+        return self.data_dict
+    
+    @staticmethod
+    def get_host(url):
+        return urlparse(url).hostname
 
     def sync_request(self, key, url: str) -> requests.Response:
         """
@@ -70,14 +75,17 @@ class Request:
             with requests.Session() as session:
                 response = session.get(url)
                 response.raise_for_status()
-                self.data_dict[key] = response.content.json()
+                self.data_dict[key] = {
+                    self.get_host(str(response.url)): response.content.json()}
                 return response.status_code
 
         except AttributeError as atrb_error:
-            self.data_dict[key] = response_handler.xml_response(
-                response.content)
+            self.data_dict[key] = {
+                self.get_host(str(response.url)): response_handler.xml_response(response.content)}
+
             self.logger.warning(
-                f"Warning: {atrb_error}, returning response as xml")
+                f"Warning: {atrb_error}, reading response as xml")
+
             return response.status_code
 
         except requests.exceptions.HTTPError as http_error:
@@ -112,7 +120,7 @@ class Request:
         httpx.HTTPError
 
         RuntimeError as warning
-        
+
         Exception
             catches any other error.
 
@@ -125,14 +133,17 @@ class Request:
             async with httpx.AsyncClient() as client:
                 response = await client.get(url)
                 response.raise_for_status()
-                self.data_dict[key] = response.content.json()
+                self.data_dict[key] = {
+                    self.get_host(str(response.url)): response.content.json()}
                 return response.status_code
 
         except AttributeError as atrb_error:
-            self.data_dict[key] = response_handler.xml_response(
-                response.content)
+            self.data_dict[key] = {
+                self.get_host(str(response.url)): response_handler.xml_response(response.content)}
+
             self.logger.warning(
-                f"Warning: {atrb_error}, returning response as xml")
+                f"Warning: {atrb_error}, reading response as xml")           
+
             return response.status_code
 
         except httpx.ConnectError as connection_error:
@@ -184,9 +195,10 @@ class Request:
         """
         try:
             if (isinstance(method, str) and method == 'a'):
-                self.logger.info("async mode selected.")                
+                self.logger.info("async mode selected.")
+
                 task_list = []
-                for id_locale, url in self.data_dict.items():                    
+                for id_locale, url in self.data_dict.items():
                     result = self.async_request(id_locale, url)
                     task_list.append(result)
 
@@ -194,6 +206,7 @@ class Request:
 
             elif (isinstance(method, str) and method == 's'):
                 self.logger.info("sync mode selected.")
+
                 for id_locale, url in self.data_dict.items():
                     self.sync_request(id_locale, url)
 
