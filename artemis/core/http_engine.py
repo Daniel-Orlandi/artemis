@@ -33,6 +33,10 @@ class Request:
 
     async def data(self, method='a'):
         Responsible for orchestrate the requests.
+
+    TODO
+    -----
+    Implement retry strategy
     """
 
     def __init__(self, data_dict: dict) -> None:
@@ -41,7 +45,7 @@ class Request:
 
     def get_data(self):
         return self.data_dict
-    
+
     @staticmethod
     def get_host(url):
         return urlparse(url).hostname
@@ -75,13 +79,13 @@ class Request:
             with requests.Session() as session:
                 response = session.get(url)
                 response.raise_for_status()
-                self.data_dict[key] = {
-                    self.get_host(str(response.url)): response.content.json()}
+                self.data_dict[key] = {'host': self.get_host(
+                    str(response.url)), 'data': response.content.json()}
                 return response.status_code
 
         except AttributeError as atrb_error:
-            self.data_dict[key] = {
-                self.get_host(str(response.url)): response_handler.xml_response(response.content)}
+            self.data_dict[key] = {'host': self.get_host(
+                str(response.url)), 'data': response_handler.xml_response(response.content)}
 
             self.logger.warning(
                 f"Warning: {atrb_error}, reading response as xml")
@@ -133,16 +137,16 @@ class Request:
             async with httpx.AsyncClient() as client:
                 response = await client.get(url)
                 response.raise_for_status()
-                self.data_dict[key] = {
-                    self.get_host(str(response.url)): response.content.json()}
+                self.data_dict[key] = {'host': self.get_host(
+                    str(response.url)), 'data': response.content.json()}
                 return response.status_code
 
         except AttributeError as atrb_error:
-            self.data_dict[key] = {
-                self.get_host(str(response.url)): response_handler.xml_response(response.content)}
+            self.data_dict[key] = {'host': self.get_host(
+                str(response.url)), 'data': response_handler.xml_response(response.content)}
 
             self.logger.warning(
-                f"Warning: {atrb_error}, reading response as xml")           
+                f"Warning: {atrb_error}, reading response as xml")
 
             return response.status_code
 
