@@ -1,4 +1,4 @@
-import logging
+import logging.config
 import sys
 from logging.handlers import TimedRotatingFileHandler
 
@@ -28,13 +28,17 @@ class Logger:
 
     set_logger(self, logger_name) -> object:
         set logger configuration.
+
+    TODO
+    ----
+    use config through log file.
     """
 
     def __init__(self, filename: str = None, log_format: str = None):
         if (isinstance(filename, str)):
             self.filename = filename
         else:
-            self.filename = "log_file.log"
+            self.filename = "logs/log_file.log"
 
         if (isinstance(log_format, str)):
             self.log_format = logging.Formatter(log_format)
