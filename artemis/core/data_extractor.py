@@ -68,13 +68,17 @@ class Extractor:
         except Exception as error:
             raise error
 
-    def load_sheet(self, filename: str):
+    def load_sheet(self, filename: str, **kwargs):
         try:
             self.logger.info(f'Trying to read sheet at: {filename}')
             if (utils.check_exists(filename=filename) == False):
                 raise OSError
+            
+            if (kwargs.get('keep_vba') is not None):
+                workbook = load_workbook(filename, keep_vba=kwargs.pop('keep_vba'), data_only=kwargs.pop('data_only'))
 
-            workbook = load_workbook(filename)
+            else:
+                workbook = load_workbook(filename, data_only=kwargs.pop('data_only'))
 
             self.logger.info(f'Done.')
             return workbook

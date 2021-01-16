@@ -12,17 +12,17 @@ my_logger = data_logger.Logger().set_logger(__name__)
 
 data = CptecApiSuite([244,241]).get_forecast('4days')
 getter = Request(data_dict=data)
-await getter.data(method='a')
+asyncio.run(getter.data(method='a'))
 
 my_extractor = Extractor(data)
 data_dict = my_extractor.get_data()
-workbook = my_extractor.load_sheet(filename="data/original_file/Telecarga_SUL_2021-01-13.xlsx")
+workbook = my_extractor.load_sheet(filename="Telecarga_SUL_2021-01-13 copy.xlsm", keep_vba = True, data_only = True)
 
 for key, value in data_dict.items():
     df = my_extractor.set_data(value)    
     my_extractor.to_xlsx(workbook, dataframe = df, data_type='forecast')
 
-my_extractor.save_sheet(workbook, out_file="data/result/Telecarga_SUL_2021-01-13.xlsx")    
+my_extractor.save_sheet(workbook, out_file="data/result/Telecarga_SUL_2021-01-13.xlsm")    
 
 end = time.perf_counter() - start
 print('end')
