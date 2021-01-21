@@ -3,9 +3,16 @@ import json
 
 
 def xml_response(response: str):
-    return jxmlease.parse(response)
+    try:
+        return jxmlease.parse(response)
+
+    except Exception:
+        raise ValueError("Could not read as xml")
 
 
 def json_response(response: str):
-    return json.loads(response)    
-    
+    try:
+        return json.loads(response)
+
+    except Exception:
+        raise ValueError("Could not read as json")

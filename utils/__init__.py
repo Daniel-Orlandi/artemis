@@ -1,3 +1,4 @@
+import datetime
 from pathlib import Path
 
 def check_exists(filename: str = None, dir_path: str = None) -> bool:
@@ -12,3 +13,13 @@ def check_exists(filename: str = None, dir_path: str = None) -> bool:
   
   else:
     return False
+
+
+def check_date_format(date: str, date_format: str):
+  try:
+        datetime.datetime.strptime(date, date_format)
+
+  except ValueError:
+        raise ValueError(f'Incorrect data format, should be {date_format}')
+
+

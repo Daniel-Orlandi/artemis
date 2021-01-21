@@ -1,6 +1,7 @@
 import requests
 import httpx
 import asyncio
+import json
 from urllib.parse import urlparse
 
 import jxmlease
@@ -80,16 +81,19 @@ class Request:
                 response = session.get(url)
                 response.raise_for_status()
                 self.data_dict[key] = {'host': self.get_host(
-                    str(response.url)), 'data': response.content.json()}
+                    str(response.url)), 'data': response_handler.json_response(response.content.decode())}
                 return response.status_code
 
-        except AttributeError as atrb_error:
+        except ValueError as not_json_error:
+            self.logger.warning(
+                f"Warning: {not_json_error}. trying to read response as xml")
+
             self.data_dict[key] = {'host': self.get_host(
                 str(response.url)), 'data': response_handler.xml_response(response.content)}
 
             self.logger.warning(
-                f"Warning: {atrb_error}, reading response as xml")
-
+                f"Warning: read response as xml")
+            
             return response.status_code
 
         except requests.exceptions.HTTPError as http_error:
@@ -138,17 +142,20 @@ class Request:
                 response = await client.get(url)
                 response.raise_for_status()
                 self.data_dict[key] = {'host': self.get_host(
-                    str(response.url)), 'data': response.content.json()}
+                    str(response.url)), 'data': response_handler.json_response(response.content.decode())}
                 return response.status_code
 
-        except AttributeError as atrb_error:
+        except ValueError as not_json_error:
+            self.logger.warning(
+                f"Warning: {not_json_error}. trying to read response as xml")
+
             self.data_dict[key] = {'host': self.get_host(
                 str(response.url)), 'data': response_handler.xml_response(response.content)}
 
             self.logger.warning(
-                f"Warning: {atrb_error}, reading response as xml")
+                f"Warning: read response as xml")
 
-            return response.status_code
+            return response.status_code        
 
         except httpx.ConnectError as connection_error:
             self.logger.error(f"Error Connecting:{connection_error}")
@@ -174,17 +181,21 @@ class Request:
             self.logger.error(f"Ops Something Else: {general_error}")
             raise general_error
 
-    async def data(self, method: str = 'a'):
+    async def get(self, method: str = "sync"):
         """
          Orchestrator for running either of the request method.
          Used chained coroutine architecture for compatbility with asyncio
 
         Parameters
         ----------
-        method: str
-            a for asynchronous execution, s for synchronous execution.
+        method: str = "sync"
+            async for asynchronous execution, sync for synchronous execution.
+            default method is sync.
+
         locale id
+
         url: str
+
         url to be requested.
 
         Raises
@@ -198,7 +209,7 @@ class Request:
 
         """
         try:
-            if (isinstance(method, str) and method == 'a'):
+            if (isinstance(method, str) and method == 'async'):
                 self.logger.info("async mode selected.")
 
                 task_list = []
@@ -208,14 +219,17 @@ class Request:
 
                 await asyncio.gather(*task_list)
 
-            elif (isinstance(method, str) and method == 's'):
+            elif (isinstance(method, str) and method == 'sync'):
                 self.logger.info("sync mode selected.")
 
                 for id_locale, url in self.data_dict.items():
                     self.sync_request(id_locale, url)
+            
+            else:
+                raise AttributeError("Method shoud be either sync or async.")
 
-        except asyncio.CancelledError as error:
-            self.logger.error(f'Error: {error}')
+        except asyncio.CancelledError as cancelled_error:
+            self.logger.error(f'Cancelled error: {error}')
             raise error
 
         except Exception as error:
