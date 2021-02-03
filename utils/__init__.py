@@ -23,3 +23,7 @@ def check_date_format(date: str, date_format: str):
         raise ValueError(f'Incorrect data format, should be {date_format}')
 
 
+def set_date_from_today(**kwargs):
+  today = datetime.date.today()
+  return today + datetime.timedelta(**kwargs)
+
