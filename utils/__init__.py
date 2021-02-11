@@ -1,4 +1,5 @@
 import datetime
+import json
 from pathlib import Path
 
 def check_exists(filename: str = None, dir_path: str = None) -> bool:
@@ -14,6 +15,12 @@ def check_exists(filename: str = None, dir_path: str = None) -> bool:
   else:
     return False
 
+def check_d_type(data, fmt: str):
+  if (isinstance(data, fmt)):
+    return True
+  
+  else:
+    raise TypeError (f'Data must be of type {fmt}.')
 
 def check_date_format(date: str, date_format: str):
   try:
@@ -22,8 +29,13 @@ def check_date_format(date: str, date_format: str):
   except ValueError:
         raise ValueError(f'Incorrect data format, should be {date_format}')
 
-
 def set_date_from_today(**kwargs):
   today = datetime.date.today()
-  return today + datetime.timedelta(**kwargs)
+  return today + datetime.timedelta(**kwargs)  
+
+def read_json(filename: str):
+  with open(filename, 'r') as j:
+    json_data = json.load(j)
+    return json_data
+
 
