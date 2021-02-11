@@ -44,11 +44,11 @@ class Request:
         self.data_dict = data_dict
         self.logger = data_logger.Logger().set_logger(__name__)
 
-    def get_data(self):
+    def get_data(self) -> dict:
         return self.data_dict
 
     @staticmethod
-    def get_host(url):
+    def get_host(url) -> str:
         return urlparse(url).hostname
 
     def sync_request(self, key, url: str) -> requests.Response:
