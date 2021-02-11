@@ -1,0 +1,39 @@
+{
+  "cities":
+  [{
+    "name":"BRASILIA",
+    "region": "CO",
+    "ws_id": ["A001","83377"],    
+    "row":"20"
+  },
+  {
+    "name":"GOIANIA",
+    "region": "CO",    
+    "ws_id":["A002", "83423"],    
+    "row":"21"
+  },
+  {
+    "name":"CAMPO GRANDE",
+    "region": "CO",
+    "ws_id":["A702"],    
+    "row":"22"
+  },
+  {
+    "name":"CUIABA",
+    "region": "CO",
+    "ws_id":["A001", "83361"],   
+    "row":"23"
+  },
+  {
+    "name":"PORTO VELHO",
+    "region": "CO",
+    "ws_id": ["A925"],   
+    "row":"24"
+  },
+  {
+    "name":"RIO BRANCO",
+    "region": "CO",
+    "ws_id": ["A104","82915"],    
+    "row":"25"
+  }]
+}
