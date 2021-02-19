@@ -1,18 +1,18 @@
-from utils.data_logger import Logger
 import numpy as np
+from openpyxl.descriptors.base import Bool
 import pandas
-import utils
-
 import unidecode
+import datetime
 
-from utils import check_d_type
+from artemis.utils import check_d_type
+from artemis.utils.data_logger import Logger
 
 class Extractor:
     def __init__(self, data_dict: dict, location_list: list) -> None:
         self.__data_dict = data_dict
         self.__data_frame = pandas.DataFrame
         self.__location_list = location_list
-        self.logger = utils.data_logger.Logger().set_logger(__name__)
+        self.logger = Logger(logger_name=__name__).get_logger()
 
     @property
     def get_data_dict(self):
@@ -28,16 +28,31 @@ class Extractor:
     def get_location_list(self):
         #Returns data contained in __location_list
         return self.__location_list
-
-    
-    def write_list(self, data_list, data, func):
+        
+    def write_list(self, data_list, data, func, item_filter:Bool = None):
         for idx, item in enumerate(data_list):
-            try:
-                func(item,data[idx])
+            if (item_filter is not None):
+                try:
+                    if(item_filter == True):
+                        func(item, data[idx])
+                    
+                    else:
+                        pass
+                except:
+                    self.logger.info(f'No data found!')
+                    func(item,str("nan"))
+
+            elif (item_filter is None):
+                try:
+                    func(item,data[idx])
+                    print(item, data)
             
-            except:
-                self.logger.info(f'No data found!')
-                func(item,str("nan"))
+                except:
+                    self.logger.info(f'No data found!')
+                    func(item,str("nan"))
+            else:
+                raise Exception(f'A error {Exception.with_traceback()} ocurred.')
+            
             
     @staticmethod
     def get_temp(dataframe: pandas.DataFrame, mode: str) -> pandas.DataFrame:
@@ -162,17 +177,16 @@ class Extractor:
                 raise ValueError(
                     'host not recognized, you need to add it to the aplication. Contact development!')
 
-            data['DATA'] =  pandas.to_datetime(data['DATA'], format='%Y-%m-%d')
-            data['CIDADE'] = data['CIDADE'].apply(lambda x: unidecode.unidecode(x))            
+            data['DATA'] =   data['DATA'].apply(lambda x: pandas.to_datetime(str(x), format='%Y-%m-%d'))
+            data['CIDADE'] = data['CIDADE'].apply(lambda x: str(unidecode.unidecode(x)).upper())            
             return data
 
         except ValueError as value_error:
             self.logger.error(f'Value Error: {value_error}')
-            raise value_error
-
+            
         except Exception as general_error:
             self.logger.error(f'Ops another error ocurred: {general_error}')
-            raise general_error
+            
 
     def set_locations(self) -> None:        
         self.logger.info('concatenating all results in data_dict.')
@@ -202,8 +216,9 @@ class Extractor:
         self.__data_frame = result.drop_duplicates()
         
         for location in self.__location_list:
-            data = self.__data_frame[self.__data_frame['CIDADE'] == location.name]
-            
-            self.write_list(location.obs_min, data['TEMP_MIN'], location.store_data)
-            self.write_list(location.obs_max, data['TEMP_MAX'], location.store_data)
-
+            data = self.__data_frame[self.__data_frame['CIDADE'] == location.name]            
+            self.write_list(location.fcast_min_temp, data['TEMP_MIN'], location.store_data, item_filter=True if(datetime.datetime.today() == data.index and datetime.datetime.today().hour <= 12) else False)
+            self.write_list(location.obs_min_temp, data['TEMP_MIN'], location.store_data, item_filter=True if(datetime.datetime.today() == data.index and datetime.datetime.today().hour <= 12) else False)
+            self.write_list(location.fcast_max_temp, data['TEMP_MAX'], location.store_data, item_filter=True if(datetime.datetime.today() == data.index and datetime.datetime.today().hour <= 12) else False)
+            self.write_list(location.obs_max_temp, data['TEMP_MAX'], location.store_data, item_filter=False if(datetime.datetime.today() == data.index and datetime.datetime.today().hour <= 12) else True)
+                

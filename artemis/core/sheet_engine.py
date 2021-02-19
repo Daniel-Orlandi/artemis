@@ -2,18 +2,19 @@ import datetime
 import os
 from dataclasses import dataclass
 
-from utils import data_logger, check_exists, check_d_type
+from artemis.utils import check_exists, check_d_type
+from artemis.utils.data_logger import Logger
 from openpyxl import load_workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 
 
 class WorkBook:
-    def __init__(self, filename: str, location_list: list) -> None:
+    def __init__(self, filename: str, location_list: list, logger) -> None:
         self.filename = filename
         self.__data_workbook = None
         self.__active_table = None
         self.__location_list = location_list
-        self.logger = data_logger.Logger().set_logger(__name__)
+        self.logger = Logger(logger_name=__name__).get_logger()
 
     @property
     def get_workbook(self):
@@ -60,23 +61,26 @@ class WorkBook:
 
     def set_date_cell(self, date: str, pos_in_table: str):
         check_d_type(pos_in_table,str)
-
-        if isinstance(date, str):
-            date = datetime.datetime.strptime(date, '%Y-%m-%d')
-
-        self.__active_table[pos_in_table] = date    
+        check_d_type(pos_in_table, str)
+        
+        date = datetime.datetime.strptime(date, '%Y-%m-%d')
+        self.__active_table[pos_in_table] = date                
     
     def set_cell(self, data_list :list, pos_in_table_list: list):
         check_d_type(pos_in_table_list,list)
         check_d_type(data_list, list)
 
-        for idx, item in enumerate(zip(pos_in_table_list, data_list)):
-            pos_in_table = str(item[0])
-            data = item[1]            
-            self.__active_table[pos_in_table] = data
+        try:
+            for idx, item in enumerate(zip(pos_in_table_list, data_list)):
+                pos_in_table = str(item[0])
+                data = item[1]            
+                self.__active_table[pos_in_table] = data
 
+        except Exception as general_error:
+            self.logger.error(f'Error: {general_error}')
+        
     def set_active_table(self, table_name: str):
-        check_d_type(table_name,str)        
+        check_d_type(table_name, str)        
         self.__active_table = self.__data_workbook[table_name]
 
     def write_data_to_table(self):
@@ -87,9 +91,7 @@ class WorkBook:
                 self.set_cell(data_list, pos_in_table_list)
         
         except Exception as general_error:
-            self.logger.error(f'Error: {general_error}')
-            raise general_error
-
+            self.logger.error(f'Error: {general_error}')            
 
     def load_sheet(self, **kwargs) -> None:
         try:
@@ -98,8 +100,7 @@ class WorkBook:
                 raise OSError
 
             if (kwargs.get('keep_vba') is not None):
-                workbook = load_workbook(self.filename, keep_vba=kwargs.pop(
-                    'keep_vba'), data_only=kwargs.pop('data_only'))
+                workbook = load_workbook(self.filename, keep_vba=kwargs.pop('keep_vba'), data_only=kwargs.pop('data_only'))
 
             else:
                 workbook = load_workbook(
@@ -110,12 +111,10 @@ class WorkBook:
 
         except OSError as os_error:
             self.logger.error(f'OS Error: {os_error}')
-            raise os_error
-
+            
         except Exception as general_error:
             self.logger.error(f'Error: {general_error}')
-            raise general_error
-
+            
     def save_sheet(self, workbook, out_file: str):
         try:
             check_d_type(out_file, str)
@@ -131,14 +130,11 @@ class WorkBook:
             workbook.save(out_file)
 
         except PermissionError as permission_error:
-            self.logger.error(
-                f'Permission Error: {permission_error}. The file you want to save is open, please close it.')
-            raise permission_error
-
+            self.logger.error(f'Permission Error: {permission_error}. The file you want to save is open, please close it.')
+            
         except OSError as os_error:
             self.logger.error(f'OS Error: {os_error}')
-            raise os_error
-
+            
         except Exception as general_error:
             self.logger.error(f'Error: {general_error}')
-            raise general_error
+            
