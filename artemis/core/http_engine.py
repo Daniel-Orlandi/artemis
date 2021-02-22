@@ -40,7 +40,7 @@ class Request:
     Implement retry strategy
     """
 
-    def __init__(self, data_dict: dict, logger) -> None:
+    def __init__(self, data_dict: dict) -> None:
         self.data_dict = data_dict
         self.logger = Logger(logger_name=__name__).get_logger()
 
@@ -209,19 +209,22 @@ class Request:
                     task_list.append(result)
 
                 await asyncio.gather(*task_list)
+                self.logger.info("Done")
 
             elif (isinstance(method, str) and method == 'sync'):
                 self.logger.info("sync mode selected.")
 
                 for id_locale, url in self.data_dict.items():
                     self.sync_request(id_locale, url)
+                    self.logger.info("Done")
             
             else:
                 raise AttributeError("Method shoud be either sync or async.")
 
         except asyncio.CancelledError as cancelled_error:
-            self.logger.error(f'Cancelled error: {cancelled_error}')
+            self.logger.error(f'Cancelled error: {cancelled_error}')            
             
         except Exception as error:
             self.logger.error(f'Error: {error}')
+            
             

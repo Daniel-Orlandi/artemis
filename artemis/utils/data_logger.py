@@ -20,8 +20,7 @@ class Logger:
 
     log_format: str = None
         if not none, change log formating.
-        else, use standart log formating : 2020-12-23 14:23:05,845 — api — INFO — get_data:72 — async mode selected.
-
+        else, use standart log formating : 2020-12-23 14:23:05
     Methods
     -------
     get_logger(self):

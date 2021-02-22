@@ -9,7 +9,7 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 
 
 class WorkBook:
-    def __init__(self, filename: str, location_list: list, logger) -> None:
+    def __init__(self, filename: str, location_list: list) -> None:
         self.filename = filename
         self.__data_workbook = None
         self.__active_table = None
