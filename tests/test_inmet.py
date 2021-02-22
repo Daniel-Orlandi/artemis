@@ -6,11 +6,11 @@ from matplotlib.cbook import flatten
 
 from artemis.core.http_engine import Request
 from artemis.core.data_extractor import Extractor
-from artemis.core.sheet_controller import WorkBook
+from artemis.core.sheet_engine import WorkBook
 from artemis.models.cptec import CptecApiSuite
 from artemis.models.inmet import InmetApiSuite
 from artemis.models.location_model import Location
-from utils import read_json
+from artemis.utils import read_json
 
 start = time.perf_counter()
 # my_logger = data_logger.Logger().set_logger(__name__)

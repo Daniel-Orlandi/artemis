@@ -2,7 +2,7 @@ import numpy as np
 from openpyxl.descriptors.base import Bool
 import pandas
 import unidecode
-import datetime
+from datetime import datetime
 
 from artemis.utils import check_d_type
 from artemis.utils.data_logger import Logger
@@ -13,6 +13,7 @@ class Extractor:
         self.__data_frame = pandas.DataFrame
         self.__location_list = location_list
         self.logger = Logger(logger_name=__name__).get_logger()
+        self.todays_date = datetime.today()
 
     @property
     def get_data_dict(self):
@@ -29,31 +30,15 @@ class Extractor:
         #Returns data contained in __location_list
         return self.__location_list
         
-    def write_list(self, data_list, data, func, item_filter:Bool = None):
+    def write_list(self, data_list, data, func):
         for idx, item in enumerate(data_list):
-            if (item_filter is not None):
-                try:
-                    if(item_filter == True):
-                        func(item, data[idx])
-                    
-                    else:
-                        pass
-                except:
-                    self.logger.info(f'No data found!')
-                    func(item,str("nan"))
-
-            elif (item_filter is None):
-                try:
-                    func(item,data[idx])
-                    print(item, data)
-            
-                except:
-                    self.logger.info(f'No data found!')
-                    func(item,str("nan"))
-            else:
-                raise Exception(f'A error {Exception.with_traceback()} ocurred.')
-            
-            
+            try:
+                func(item,data[idx])               
+        
+            except:
+                self.logger.info(f'No data found!')
+                func(item,str("nan"))
+                       
     @staticmethod
     def get_temp(dataframe: pandas.DataFrame, mode: str) -> pandas.DataFrame:
         """
@@ -188,8 +173,8 @@ class Extractor:
             self.logger.error(f'Ops another error ocurred: {general_error}')
             
 
-    def set_locations(self) -> None:        
-        self.logger.info('concatenating all results in data_dict.')
+    def set_carga(self) -> None:        
+        self.logger.info('Beggining data extraction')
         result = pandas.DataFrame()
 
         # aplica set_data linha a linha, pq set data foi pensado para funcionar por cidade
@@ -216,9 +201,16 @@ class Extractor:
         self.__data_frame = result.drop_duplicates()
         
         for location in self.__location_list:
-            data = self.__data_frame[self.__data_frame['CIDADE'] == location.name]            
-            self.write_list(location.fcast_min_temp, data['TEMP_MIN'], location.store_data, item_filter=True if(datetime.datetime.today() == data.index and datetime.datetime.today().hour <= 12) else False)
-            self.write_list(location.obs_min_temp, data['TEMP_MIN'], location.store_data, item_filter=True if(datetime.datetime.today() == data.index and datetime.datetime.today().hour <= 12) else False)
-            self.write_list(location.fcast_max_temp, data['TEMP_MAX'], location.store_data, item_filter=True if(datetime.datetime.today() == data.index and datetime.datetime.today().hour <= 12) else False)
-            self.write_list(location.obs_max_temp, data['TEMP_MAX'], location.store_data, item_filter=False if(datetime.datetime.today() == data.index and datetime.datetime.today().hour <= 12) else True)
+            data = self.__data_frame[self.__data_frame['CIDADE'] == location.name]
+
+            if(self.todays_date.hour < 15):
+                location.remove_from_positioning_list('F', location.obs_max_temp)
+                location.add_to_positioning_list('F', location.fcast_max_temp)
+                
+            self.write_list(location.obs_min_temp, data['TEMP_MIN'], location.store_data)            
+            self.write_list(location.fcast_min_temp, data['TEMP_MIN'], location.store_data)            
+            self.write_list(location.fcast_max_temp, data['TEMP_MAX'], location.store_data)
+            self.write_list(location.obs_max_temp, data['TEMP_MAX'], location.store_data)
+
+        self.logger.info('Done')
                 
