@@ -1,8 +1,6 @@
 import requests
 import httpx
 import asyncio
-import json
-import jxmlease
 from urllib.parse import urlparse
 
 from artemis.core import response_handler

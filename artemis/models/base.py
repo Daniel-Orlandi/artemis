@@ -41,7 +41,7 @@ class BaseModelInterface:
             check_d_type(mode, str)
             getter = Request(data_dict=self.data_dict)
             asyncio.run(getter.get(method=mode))
-            self.__data_dict = getter.get_data_dict()
+            self.data_dict = getter.get_data_dict()
         
         except Exception as error:
             self.logger.error(f'Error: {error}')

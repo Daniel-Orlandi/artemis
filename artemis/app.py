@@ -14,11 +14,19 @@ from artemis.core.sheet_engine import WorkBook
 from artemis.utils import data_logger, check_d_type, read_json
 
 class MainFactory:
-  def __init__(self, date_begin:str, date_end:str, input_excel_file_list:list, output_excel_file_list:list) -> None:
+  def __init__(self, date_begin:str,
+               date_end:str,
+               input_excel_file_list:list,
+               output_excel_file_list:list,
+               obs_host_list:list,
+               fcast_host_list:list ) -> None:
+
       self.date_begin = date_begin
       self.date_end = date_end
       self.input_excel_file_list = input_excel_file_list
       self.output_excel_file_list = output_excel_file_list
+      self.obs_host_list = obs_host_list
+      self.fcast_host_list = fcast_host_list
       self.__location_list = None
       self.__data_dict = None
       self.logger = data_logger.Logger(logger_name=__name__).get_logger()
@@ -124,7 +132,20 @@ class MainFactory:
     except Exception as general_error:
       self.logger.error(f'General error: {general_error}') 
       raise general_error
-      
+    
+  def multi_run(self, data_list:list, func) -> list:
+     self.logger.info("Multi-run method called. Running")
+
+     try:      
+       result_list = [func(item) for item in data_list]  
+       return result_list
+    
+     except Exception as general_error:
+       self.logger.error(f'General error: {general_error}')
+       raise general_error
+
+
+
 
 
 

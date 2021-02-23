@@ -7,5 +7,9 @@
   "dates":{
     "date_begin":"2021-02-21",
     "date_end":"2021-02-22"    
+  },
+  "hosts":{
+    "obs_host_list":["inmet"],
+    "fcast_host_list":["cptec"]
   }
 }
