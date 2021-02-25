@@ -48,7 +48,7 @@ class Location:
       raise general_error
       
 
-  def store_data(self, key, value, mode:str='general') -> None:
+  def store_data(self, key, value) -> None:
     self.data[str(key)+str(self.row)] = value
 
 

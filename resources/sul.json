@@ -1,0 +1,45 @@
+{
+  "cities":
+  [{
+    "name":"PORTO ALEGRE",
+    "region": "SUL",
+    "ws_id": ["A801","83967"],
+    "cptec_id":["237"],  
+    "row":"6"
+  },
+  {
+    "name":"FLORIANOPOLIS",
+    "region": "SUL",    
+    "ws_id":["A806"],
+    "cptec_id":["228"],    
+    "row":"9"
+  },
+  {
+    "name":"CURITIBA",
+    "region": "SUL",
+    "ws_id":["A807", "83842"],
+    "cptec_id":["227"],    
+    "row":"12"
+  },
+  {
+    "name":"MARINGA",
+    "region": "SUL",
+    "ws_id":["A835", "83767"],
+    "cptec_id":["3161"],   
+    "row":"14"
+  },
+  {
+    "name":"LONDRINA",
+    "region": "SUL",
+    "ws_id": ["A925", "83766"],
+    "cptec_id":["2993"],   
+    "row":"15"
+  },
+  {
+    "name":"FOZ DO IGUACU",
+    "region": "SUL",
+    "ws_id": ["A846"],
+    "cptec_id":["2053"],    
+    "row":"16"
+  }]
+}

@@ -1,6 +1,5 @@
 import datetime
 import asyncio
-from logging import root
 import time
 import pandas
 from matplotlib.cbook import flatten
@@ -13,9 +12,10 @@ from artemis.models.location_model import Location
 from artemis.core.sheet_engine import WorkBook
 from artemis.utils import data_logger, check_d_type, read_json
 
-class MainFactory:
+class Carga:
   def __init__(self, date_begin:str,
                date_end:str,
+               location_file_list:list,
                input_excel_file_list:list,
                output_excel_file_list:list,
                obs_host_list:list,
@@ -23,6 +23,7 @@ class MainFactory:
 
       self.date_begin = date_begin
       self.date_end = date_end
+      self.location_file_list = location_file_list
       self.input_excel_file_list = input_excel_file_list
       self.output_excel_file_list = output_excel_file_list
       self.obs_host_list = obs_host_list
@@ -111,23 +112,22 @@ class MainFactory:
 
     except Exception as general_error:
       self.logger.error(f'General error: {general_error}')
-      raise general_error     
-    
-  def write_to_excel(self) -> None:
+      raise general_error 
+
+  def write_to_excel(self, input_filename, save_filename) -> None:
     try:
       self.logger.info('Beginning data pre-processing')
       my_extractor = Extractor(self.__data_dict, self.__location_list)
       my_extractor.set_carga()
       self.logger.info('Done.')
       
-      self.logger.info('Writing data to excel file.')
-      for input_file, save_file in list(zip(self.input_excel_file_list, self.output_excel_file_list)):
-          my_workbook = WorkBook(location_list=self.__location_list, filename=input_file)
-          my_workbook.load_sheet(keep_vba=True, data_only=False)
-          my_workbook.set_active_table("Tabela")
-          my_workbook.set_date_cell(self.date_end, "A1")
-          my_workbook.write_data_to_table() 
-          my_workbook.save_sheet(my_workbook.get_workbook, save_file + self.date_begin +'.xlsm')
+      self.logger.info('Writing data to excel file.')      
+      my_workbook = WorkBook(location_list=self.__location_list, filename=input_filename)
+      my_workbook.load_sheet(keep_vba=True)
+      my_workbook.set_active_table("Tabela")
+      my_workbook.set_date_cell(self.date_end, "A1")
+      my_workbook.write_data_to_table() 
+      my_workbook.save_sheet(my_workbook.get_workbook, save_filename + self.date_end +'.xlsm')
 
     except Exception as general_error:
       self.logger.error(f'General error: {general_error}') 

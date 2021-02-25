@@ -6,6 +6,7 @@ from artemis.utils import check_exists, check_d_type
 from artemis.utils.data_logger import Logger
 from openpyxl import load_workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
+from openpyxl.worksheet.datavalidation import DataValidation
 
 
 class WorkBook:
@@ -58,6 +59,10 @@ class WorkBook:
 
         except Exception as error:
             raise error
+    
+    def add_drop_down(self, list):
+        pass
+
 
     def set_date_cell(self, date: str, pos_in_table: str):
         check_d_type(pos_in_table,str)
@@ -80,7 +85,13 @@ class WorkBook:
             self.logger.error(f'Error: {general_error}')
         
     def set_active_table(self, table_name: str):
-        check_d_type(table_name, str)        
+        check_d_type(table_name, str)
+        if (table_name in self.__data_workbook.sheetnames):
+            pass
+
+        else:
+            self.__data_workbook.create_sheet(table_name) 
+                   
         self.__active_table = self.__data_workbook[table_name]
 
     def write_data_to_table(self):
@@ -100,11 +111,10 @@ class WorkBook:
                 raise OSError
 
             if (kwargs.get('keep_vba') is not None):
-                workbook = load_workbook(self.filename, keep_vba=kwargs.pop('keep_vba'), data_only=kwargs.pop('data_only'))
+                workbook = load_workbook(self.filename, keep_vba=kwargs.pop('keep_vba'), keep_links=True)
 
             else:
-                workbook = load_workbook(
-                    self.filename, data_only=kwargs.pop('data_only'))
+                workbook = load_workbook(self.filename, keep_links=True)
 
             self.__data_workbook = workbook
             self.logger.info(f'Done.')

@@ -30,14 +30,73 @@ class Extractor:
         #Returns data contained in __location_list
         return self.__location_list
         
-    def write_list(self, data_list, data, func):
-        for idx, item in enumerate(data_list):
-            try:
-                func(item,data[idx])               
+    def write_list(self, data_list, data, func):     
+            for idx, item in enumerate(data_list):
+                try:                                             
+                    func(item,data[idx])
+
+                except:
+                    self.logger.warning(f'No data found!')
+                    func(item,str("nan"))
+
+    def set_base_dataframe(self):
+        result = pandas.DataFrame()
+        # aplica set_site linha a linha, pq set data foi pensado para funcionar por cidade
+        for key, value in self.__data_dict.items():
+            try:                       
+                df = self.set_site(value)
+                self.logger.info('Location:{}'.format(df['CIDADE']))
+                result = pandas.concat([result, df])
+            except TypeError as type_error:
+                self.logger.warning(f'TypeError: {type_error}')
+                pass
+            except Exception as general_error:
+                self.logger.error(f'Error: {general_error}')
+                raise
+        return result
+
+    def overlaping_day_solver(self, data):
+        temp_data = data             
+        try:
+            #Caso 1 onde obs e previsão se encontram, pega fcast_max dia, e coloca na linha,
+            #obss. Despreza linhas só com fcast 
+            if(self.todays_date.hour < 15):
+                data = data[data.index == self.todays_date]
+                if (data.shape != (2,3)):                                        
+                   raise ValueError(f"Shape not as expected. Expected (2,3) got {data.shape}")                   
+
+                data.reset_index(inplace=True)
+
+                value = data['TEMP_MAX'].loc[data['TEMP_MAX'] != 'NaN'].max()
+                if (not value):
+                   raise ValueError(f"{value} empty, skipping.")               
+                
+                data['TEMP_MAX'][0] = value
+                data = data.drop(data.index[1])               
+                
+            #Caso 2, tem todas as obss, despreza linha com fcasts para o dia,                
+            else:                 
+                 data = data[data.index == self.todays_date]
+                
+                 if (data.shape != (2,3)):
+                    raise ValueError(f"Shape not as expected. Expected (2,3) got {data.shape}")
+
+                 data.reset_index(inplace=True)                 
+                 data = data.drop(data.index[1])
+                
+            data.set_index('DATA', inplace=True) 
+            return data
+
+        except ValueError as overlaping_exception:
+            self.logger.warning(f'Nothing to delete: {overlaping_exception}')                     
+            return temp_data         
+     
+        except Exception as overlaping_general_error:
+            self.logger.warning(f'Error: {overlaping_general_error}')            
+            raise overlaping_general_error
+
         
-            except:
-                self.logger.info(f'No data found!')
-                func(item,str("nan"))
+       
                        
     @staticmethod
     def get_temp(dataframe: pandas.DataFrame, mode: str) -> pandas.DataFrame:
@@ -97,7 +156,7 @@ class Extractor:
 
         else:
             raise TypeError("mode must be a str and equal to TEMP_MAX or TEMP_MIN.")
-
+                            
         return result    
     
     def set_site(self, data_dict: dict) -> pandas.DataFrame:
@@ -175,42 +234,40 @@ class Extractor:
 
     def set_carga(self) -> None:        
         self.logger.info('Beggining data extraction')
-        result = pandas.DataFrame()
+        result = self.set_base_dataframe()
 
-        # aplica set_data linha a linha, pq set data foi pensado para funcionar por cidade
-        for key, value in self.__data_dict.items():            
-            df = self.set_site(value)
-            self.logger.info('Location:{}'.format(df['CIDADE']))
-            result = pandas.concat([result, df])            
-
+        #Mudando dtypr de str para float nas colunas 'TEMP_MAX' e 'TEMP_MIN'
         result[['TEMP_MAX', 'TEMP_MIN']] = result[['TEMP_MAX', 'TEMP_MIN']].apply(pandas.to_numeric)
-
         
-        temp_min = self.get_temp(result, 'TEMP_MIN')
+        #Pegando temps max e min
+        temp_min = self.get_temp(result, 'TEMP_MIN').drop_duplicates()
+        temp_min.drop(columns={'CD_ESTACAO_min'}, inplace=True)
+        self.logger.info(temp_min)
         self.logger.info('Done getting min.')
         
-        temp_max = self.get_temp(result, 'TEMP_MAX')
-        self.logger.info('Done getting max.')
+        temp_max = self.get_temp(result, 'TEMP_MAX').drop_duplicates()
+        temp_max.drop(columns={'CD_ESTACAO_max'}, inplace=True)
+        self.logger.info(temp_max)
+        self.logger.info('Done getting max.')         
         
-        result = pandas.merge(temp_min, temp_max, how='outer')
-        result = result.rename(columns={"DATA_x": "DATA"})
-        result.index = result['DATA']
-        result.drop(columns={'DATA'})
-        result.sort_index(inplace=True)
-        result = result[['CIDADE', 'TEMP_MAX', "CD_ESTACAO_max", 'TEMP_MIN', "CD_ESTACAO_min"]]
+        #Setando DATA como index
+        result = temp_min.merge(temp_max, how='left')              
+        result.set_index('DATA', inplace=True)        
+        result.sort_index(inplace=True)   
+        result = result[['CIDADE', 'TEMP_MAX','TEMP_MIN']]
         self.__data_frame = result.drop_duplicates()
-        
-        for location in self.__location_list:
-            data = self.__data_frame[self.__data_frame['CIDADE'] == location.name]
+        print (self.__data_frame)
 
-            if(self.todays_date.hour < 15):
-                location.remove_from_positioning_list('F', location.obs_max_temp)
-                location.add_to_positioning_list('F', location.fcast_max_temp)
-                
-            self.write_list(location.obs_min_temp, data['TEMP_MIN'], location.store_data)            
-            self.write_list(location.fcast_min_temp, data['TEMP_MIN'], location.store_data)            
-            self.write_list(location.fcast_max_temp, data['TEMP_MAX'], location.store_data)
-            self.write_list(location.obs_max_temp, data['TEMP_MAX'], location.store_data)
-
+        #Escreve os dados em location.data, dicionário utilizado para escrever na planilha excel.
+        for location in self.__location_list:            
+            data = self.__data_frame[self.__data_frame['CIDADE'] == location.name]            
+            data = self.overlaping_day_solver(data)
+            self.write_list(location.obs_min_temp + location.fcast_min_temp, data['TEMP_MIN'], location.store_data)
+            self.write_list(location.obs_max_temp + location.fcast_max_temp, data['TEMP_MAX'], location.store_data)
+               
         self.logger.info('Done')
+
+    
+
+    
                 
