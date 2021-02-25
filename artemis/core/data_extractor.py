@@ -8,6 +8,52 @@ from artemis.utils import check_d_type
 from artemis.utils.data_logger import Logger
 
 class Extractor:
+    """
+         Extractor class to normalize data from requests made to different
+         weather dataa providers.         
+
+        Attributes
+        ----------
+            data_dict: dict
+                dictionary containing data from providers.
+
+            self.__data_frame: pandas.DataFrame
+                dataframe where data will be stored after processing.
+
+            self.__location_list: list of Location objects
+                data from dataframe will be location-wise
+                selected and stored in location objects
+
+            self.logger: utils.data_logger
+                logger initializator
+
+            self.todays_date 
+            
+        Returns
+        ----------
+        None
+
+        Methods
+        ----------
+        get_data_dict(self)
+
+        get_dataframe(self)
+
+        get_location_list(self)
+
+        write_list(self, data_list, data, func)
+
+        set_base_dataframe(self)
+
+        overlaping_day_solver(self, data)
+
+        get_temp(dataframe: pandas.DataFrame, mode: str) -> pandas.DataFrame:
+
+        set_site(self, data_dict: dict) -> pandas.DataFrame:
+
+        set_carga(self) -> None:
+
+        """  
     def __init__(self, data_dict: dict, location_list: list) -> None:
         self.__data_dict = data_dict
         self.__data_frame = pandas.DataFrame
@@ -16,17 +62,17 @@ class Extractor:
         self.todays_date = datetime.today()
 
     @property
-    def get_data_dict(self):
+    def get_data_dict(self) -> dict:
         #Returns data contained in __data_dict       
         return self.__data_dict
 
     @property
-    def get_dataframe(self):
+    def get_dataframe(self) -> pandas.DataFrame:
         #Returns data contained in __data_frame
         return self.__data_frame
     
     @property
-    def get_location_list(self):
+    def get_location_list(self) -> list:
         #Returns data contained in __location_list
         return self.__location_list
         
@@ -39,7 +85,30 @@ class Extractor:
                     self.logger.warning(f'No data found!')
                     func(item,str("nan"))
 
-    def set_base_dataframe(self):
+    def set_base_dataframe(self) -> pandas.DataFrame:
+        """
+         Wraper method for generate base dataframe from dict.         
+
+        Parameters
+        ----------
+        self       
+            
+        Returns
+        ----------
+        pandas.Dataframe
+            dataframe containing selected data for given location.
+
+        Raises
+        ----------
+        TypeError
+            for empty data in dictionary
+
+        ValueError
+            {value} empty, skipping.
+
+        Exception
+            general error
+        """  
         result = pandas.DataFrame()
         # aplica set_site linha a linha, pq set data foi pensado para funcionar por cidade
         for key, value in self.__data_dict.items():
@@ -47,15 +116,46 @@ class Extractor:
                 df = self.set_site(value)
                 self.logger.info('Location:{}'.format(df['CIDADE']))
                 result = pandas.concat([result, df])
+
             except TypeError as type_error:
                 self.logger.warning(f'TypeError: {type_error}')
                 pass
+
             except Exception as general_error:
                 self.logger.error(f'Error: {general_error}')
                 raise
+
         return result
 
-    def overlaping_day_solver(self, data):
+    def overlaping_day_solver(self, data) -> pandas.DataFrame:
+        """
+         method responsible to solve overlaping current day in dataframe. This method expects
+         dataframe format to be:['DATA','TEMP_MAX', 'TEMP_MIN'] shape = (2,3), with only one location per df,
+         with no duplicates. The method select current day based on todays_date, and copy temp_max, from forecast line to
+         obs line(expected to be the first occurence in data)
+         
+
+        Parameters
+        ----------
+        data: pandas.Dataframe
+            dataframe containing temperature data to be extracted.      
+            
+        Returns
+        ----------
+        pandas.Dataframe
+            dataframe containing selected data for given location.
+
+        Raises
+        ----------
+        ValueError
+            Shape not as expected. Expected (2,3) got {data.shape}
+
+        ValueError
+            {value} empty, skipping.
+
+        Exception
+            f'Error: {overlaping_general_error} (general error.)
+        """  
         temp_data = data             
         try:
             #Caso 1 onde obs e previsão se encontram, pega fcast_max dia, e coloca na linha,
@@ -93,10 +193,7 @@ class Extractor:
      
         except Exception as overlaping_general_error:
             self.logger.warning(f'Error: {overlaping_general_error}')            
-            raise overlaping_general_error
-
-        
-       
+            raise overlaping_general_error      
                        
     @staticmethod
     def get_temp(dataframe: pandas.DataFrame, mode: str) -> pandas.DataFrame:
@@ -232,7 +329,20 @@ class Extractor:
             self.logger.error(f'Ops another error ocurred: {general_error}')
             
 
-    def set_carga(self) -> None:        
+    def set_carga(self) -> None:
+        """
+         wraper method responsible process request data, and store it in each location
+         in location_list
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        ----------
+        None       
+
+        """        
         self.logger.info('Beggining data extraction')
         result = self.set_base_dataframe()
 

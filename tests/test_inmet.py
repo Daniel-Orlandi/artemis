@@ -15,7 +15,7 @@ from artemis.utils import read_json
 start = time.perf_counter()
 # my_logger = data_logger.Logger().set_logger(__name__)
 
-file = read_json("resources/locations.json")
+file = read_json("resources/sul.json")
 cities_list = []
 
 for city in file['cities']:
@@ -29,13 +29,13 @@ id_locale_list = list(flatten(id_locale_list))
 
 model_2 = InmetApiSuite(id_locale_list=id_locale_list)
 url = model_2.base_url + "/estacao/{}/{}/{}"
-data_dict = model_2.set_request_dict_by_date_range(url,"2021-02-01","2021-02-02")
+model_2.set_request_dict_by_date_range(url,"2021-02-23","2021-02-24")
 
-getter = Request(data_dict=data_dict)
-asyncio.run(getter.get(method='async'))
+getter = Request(data_dict=model_2.data_dict)
+asyncio(getter.get(method='async'))
 
-my_extractor = Extractor(data_dict, cities_list)
-my_extractor.set_locations()
+my_extractor = Extractor(getter.get_data_dict(), cities_list)
+my_extractor.set_carga()
 
 my_workbook = WorkBook(location_list = cities_list,filename ="data/original_file/Telecarga_CO_2021-01-22.xlsm")
 my_workbook.load_sheet(keep_vba=True, data_only=False)
