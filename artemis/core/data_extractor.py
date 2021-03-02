@@ -1,44 +1,200 @@
-from utils.data_logger import Logger
 import numpy as np
+from openpyxl.descriptors.base import Bool
 import pandas
-import utils
-
 import unidecode
+from datetime import datetime
 
-from utils import check_d_type
+from artemis.utils import check_d_type
+from artemis.utils.data_logger import Logger
 
 class Extractor:
+    """
+         Extractor class to normalize data from requests made to different
+         weather dataa providers.         
+
+        Attributes
+        ----------
+            data_dict: dict
+                dictionary containing data from providers.
+
+            self.__data_frame: pandas.DataFrame
+                dataframe where data will be stored after processing.
+
+            self.__location_list: list of Location objects
+                data from dataframe will be location-wise
+                selected and stored in location objects
+
+            self.logger: utils.data_logger
+                logger initializator
+
+            self.todays_date 
+            
+        Returns
+        ----------
+        None
+
+        Methods
+        ----------
+        get_data_dict(self)
+
+        get_dataframe(self)
+
+        get_location_list(self)
+
+        write_list(self, data_list, data, func)
+
+        set_base_dataframe(self)
+
+        overlaping_day_solver(self, data)
+
+        get_temp(dataframe: pandas.DataFrame, mode: str) -> pandas.DataFrame:
+
+        set_site(self, data_dict: dict) -> pandas.DataFrame:
+
+        set_carga(self) -> None:
+
+        """  
     def __init__(self, data_dict: dict, location_list: list) -> None:
         self.__data_dict = data_dict
         self.__data_frame = pandas.DataFrame
         self.__location_list = location_list
-        self.logger = utils.data_logger.Logger().set_logger(__name__)
+        self.logger = Logger(logger_name=__name__).get_logger()
+        self.todays_date = datetime.today()
 
     @property
-    def get_data_dict(self):
+    def get_data_dict(self) -> dict:
         #Returns data contained in __data_dict       
         return self.__data_dict
 
     @property
-    def get_dataframe(self):
+    def get_dataframe(self) -> pandas.DataFrame:
         #Returns data contained in __data_frame
         return self.__data_frame
     
     @property
-    def get_location_list(self):
+    def get_location_list(self) -> list:
         #Returns data contained in __location_list
         return self.__location_list
+        
+    def write_list(self, data_list, data, func):     
+            for idx, item in enumerate(data_list):
+                try:                                             
+                    func(item,data[idx])
 
-    
-    def write_list(self, data_list, data, func):
-        for idx, item in enumerate(data_list):
-            try:
-                func(item,data[idx])
+                except:
+                    self.logger.warning(f'No data found!')
+                    func(item,str("nan"))
+
+    def set_base_dataframe(self) -> pandas.DataFrame:
+        """
+         Wraper method for generate base dataframe from dict.         
+
+        Parameters
+        ----------
+        self       
             
-            except:
-                self.logger.info(f'No data found!')
-                func(item,str("nan"))
+        Returns
+        ----------
+        pandas.Dataframe
+            dataframe containing selected data for given location.
+
+        Raises
+        ----------
+        TypeError
+            for empty data in dictionary
+
+        ValueError
+            {value} empty, skipping.
+
+        Exception
+            general error
+        """  
+        result = pandas.DataFrame()
+        # aplica set_site linha a linha, pq set data foi pensado para funcionar por cidade
+        for key, value in self.__data_dict.items():
+            try:                       
+                df = self.set_site(value)
+                self.logger.info('Location:{}'.format(df['CIDADE']))
+                result = pandas.concat([result, df])
+
+            except TypeError as type_error:
+                self.logger.warning(f'TypeError: {type_error}')
+                pass
+
+            except Exception as general_error:
+                self.logger.error(f'Error: {general_error}')
+                raise
+
+        return result
+
+    def overlaping_day_solver(self, data) -> pandas.DataFrame:
+        """
+         method responsible to solve overlaping current day in dataframe. This method expects
+         dataframe format to be:['DATA','TEMP_MAX', 'TEMP_MIN'] shape = (2,3), with only one location per df,
+         with no duplicates. The method select current day based on todays_date, and copy temp_max, from forecast line to
+         obs line(expected to be the first occurence in data)
+         
+
+        Parameters
+        ----------
+        data: pandas.Dataframe
+            dataframe containing temperature data to be extracted.      
             
+        Returns
+        ----------
+        pandas.Dataframe
+            dataframe containing selected data for given location.
+
+        Raises
+        ----------
+        ValueError
+            Shape not as expected. Expected (2,3) got {data.shape}
+
+        ValueError
+            {value} empty, skipping.
+
+        Exception
+            f'Error: {overlaping_general_error} (general error.)
+        """  
+        temp_data = data             
+        try:
+            #Caso 1 onde obs e previsão se encontram, pega fcast_max dia, e coloca na linha,
+            #obss. Despreza linhas só com fcast 
+            if(self.todays_date.hour < 15):
+                data = data[data.index == self.todays_date]
+                if (data.shape != (2,3)):                                        
+                   raise ValueError(f"Shape not as expected. Expected (2,3) got {data.shape}")                   
+
+                data.reset_index(inplace=True)
+
+                value = data['TEMP_MAX'].loc[data['TEMP_MAX'] != 'NaN'].max()
+                if (not value):
+                   raise ValueError(f"{value} empty, skipping.")               
+                
+                data['TEMP_MAX'][0] = value
+                data = data.drop(data.index[1])               
+                
+            #Caso 2, tem todas as obss, despreza linha com fcasts para o dia,                
+            else:                 
+                 data = data[data.index == self.todays_date]
+                
+                 if (data.shape != (2,3)):
+                    raise ValueError(f"Shape not as expected. Expected (2,3) got {data.shape}")
+
+                 data.reset_index(inplace=True)                 
+                 data = data.drop(data.index[1])
+                
+            data.set_index('DATA', inplace=True) 
+            return data
+
+        except ValueError as overlaping_exception:
+            self.logger.warning(f'Nothing to delete: {overlaping_exception}')                     
+            return temp_data         
+     
+        except Exception as overlaping_general_error:
+            self.logger.warning(f'Error: {overlaping_general_error}')            
+            raise overlaping_general_error      
+                       
     @staticmethod
     def get_temp(dataframe: pandas.DataFrame, mode: str) -> pandas.DataFrame:
         """
@@ -97,7 +253,7 @@ class Extractor:
 
         else:
             raise TypeError("mode must be a str and equal to TEMP_MAX or TEMP_MIN.")
-
+                            
         return result    
     
     def set_site(self, data_dict: dict) -> pandas.DataFrame:
@@ -162,48 +318,66 @@ class Extractor:
                 raise ValueError(
                     'host not recognized, you need to add it to the aplication. Contact development!')
 
-            data['DATA'] =  pandas.to_datetime(data['DATA'], format='%Y-%m-%d')
-            data['CIDADE'] = data['CIDADE'].apply(lambda x: unidecode.unidecode(x))            
+            data['DATA'] =   data['DATA'].apply(lambda x: pandas.to_datetime(str(x), format='%Y-%m-%d'))
+            data['CIDADE'] = data['CIDADE'].apply(lambda x: str(unidecode.unidecode(x)).upper())            
             return data
 
         except ValueError as value_error:
             self.logger.error(f'Value Error: {value_error}')
-            raise value_error
-
+            
         except Exception as general_error:
             self.logger.error(f'Ops another error ocurred: {general_error}')
-            raise general_error
+            
 
-    def set_locations(self) -> None:        
-        self.logger.info('concatenating all results in data_dict.')
-        result = pandas.DataFrame()
+    def set_carga(self) -> None:
+        """
+         wraper method responsible process request data, and store it in each location
+         in location_list
 
-        # aplica set_data linha a linha, pq set data foi pensado para funcionar por cidade
-        for key, value in self.__data_dict.items():            
-            df = self.set_site(value)
-            self.logger.info('Location:{}'.format(df['CIDADE']))
-            result = pandas.concat([result, df])            
+        Parameters
+        ----------
+        None
 
+        Returns
+        ----------
+        None       
+
+        """        
+        self.logger.info('Beggining data extraction')
+        result = self.set_base_dataframe()
+
+        #Mudando dtypr de str para float nas colunas 'TEMP_MAX' e 'TEMP_MIN'
         result[['TEMP_MAX', 'TEMP_MIN']] = result[['TEMP_MAX', 'TEMP_MIN']].apply(pandas.to_numeric)
-
         
-        temp_min = self.get_temp(result, 'TEMP_MIN')
+        #Pegando temps max e min
+        temp_min = self.get_temp(result, 'TEMP_MIN').drop_duplicates()
+        temp_min.drop(columns={'CD_ESTACAO_min'}, inplace=True)
+        self.logger.info(temp_min)
         self.logger.info('Done getting min.')
         
-        temp_max = self.get_temp(result, 'TEMP_MAX')
-        self.logger.info('Done getting max.')
+        temp_max = self.get_temp(result, 'TEMP_MAX').drop_duplicates()
+        temp_max.drop(columns={'CD_ESTACAO_max'}, inplace=True)
+        self.logger.info(temp_max)
+        self.logger.info('Done getting max.')         
         
-        result = pandas.merge(temp_min, temp_max, how='outer')
-        result = result.rename(columns={"DATA_x": "DATA"})
-        result.index = result['DATA']
-        result.drop(columns={'DATA'})
-        result.sort_index(inplace=True)
-        result = result[['CIDADE', 'TEMP_MAX', "CD_ESTACAO_max", 'TEMP_MIN', "CD_ESTACAO_min"]]
+        #Setando DATA como index
+        result = temp_min.merge(temp_max, how='left')              
+        result.set_index('DATA', inplace=True)        
+        result.sort_index(inplace=True)   
+        result = result[['CIDADE', 'TEMP_MAX','TEMP_MIN']]
         self.__data_frame = result.drop_duplicates()
-        
-        for location in self.__location_list:
-            data = self.__data_frame[self.__data_frame['CIDADE'] == location.name]
-            
-            self.write_list(location.obs_min, data['TEMP_MIN'], location.store_data)
-            self.write_list(location.obs_max, data['TEMP_MAX'], location.store_data)
+        print (self.__data_frame)
 
+        #Escreve os dados em location.data, dicionário utilizado para escrever na planilha excel.
+        for location in self.__location_list:            
+            data = self.__data_frame[self.__data_frame['CIDADE'] == location.name]            
+            data = self.overlaping_day_solver(data)
+            self.write_list(location.obs_min_temp + location.fcast_min_temp, data['TEMP_MIN'], location.store_data)
+            self.write_list(location.obs_max_temp + location.fcast_max_temp, data['TEMP_MAX'], location.store_data)
+               
+        self.logger.info('Done')
+
+    
+
+    
+                

@@ -1,0 +1,15 @@
+{
+  "files":{
+    "location_file_list":["/mnt/d/danie/work/projects/active/artemis/resources/sul.json"],    
+    "excel_input_files_list":["/mnt/d/danie/work/projects/active/artemis/data/input_data/Telecarga_SUL_.xlsm"],
+    "excel_output_files_list":["/mnt/d/danie/work/projects/active/artemis/data/Telecarga_SUL_"]
+  },
+  "dates":{
+    "date_begin":"2021-02-23",
+    "date_end":"2021-02-24"    
+  },
+  "hosts":{
+    "obs_host_list":["inmet"],
+    "fcast_host_list":["cptec"]
+  }
+}

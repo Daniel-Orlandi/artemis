@@ -11,19 +11,44 @@ class Location:
     self.cptec_id = cptec_id
     self.ws_id = ws_id
     self.row = None
-    self.obs_min = ["C","E"]
-    self.obs_max = ["D","F"]
-    self.fcast_temp_min = ["G","I","K"]
-    self.fcast_temp_max = ["H","J","L"]   
-    self.col_range_w_cond = ["M","N","O","P","Q","R","S","T","U","W","X","Y","Z","AA","AB","AD","AF","AG"]
+    self.obs_min_temp = ["C","E"]
+    self.obs_max_temp = ["D", "F"]
+    self.fcast_min_temp = ["G","I","K"]
+    self.fcast_max_temp = ["H","J","L"]   
+    self.cloud_cover_w_cond = ["M", "P", "S", "V", "Y", "AB"]
+    self.precip_w_cond = ["N", "Q", "T", "W", "Z", "AC"]
+    self.period_w_cond = ["O", "R", "U", "X", "AA", "AD"]     
     self.data = {}
   
   def set_location(self,location_dict: dict):
     for key, value in location_dict.items():
       self.__dict__[key] = value
     
-  def get_id_locale(self) -> list:
+  def get_id_locale(self):
     return self.ws_id
+
+  @staticmethod
+  def remove_from_positioning_list(item, data_list:list, ignore:bool = False) -> None:
+    try:
+      data_list.remove(item)
+    
+    except ValueError as value_error:
+      raise value_error
+
+    except Exception as general_error:
+      raise general_error
+      
+  @staticmethod
+  def add_to_positioning_list(item, data_list:list) -> None:
+    try:
+      data_list.append(item)
+    
+    except ValueError as value_error:
+      raise value_error
+
+    except Exception as general_error:
+      raise general_error
+      
 
   def store_data(self, key, value) -> None:
     self.data[str(key)+str(self.row)] = value

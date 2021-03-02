@@ -3,37 +3,43 @@
   [{
     "name":"BRASILIA",
     "region": "CO",
-    "ws_id": ["A001","83377"],    
+    "ws_id": ["A001","83377"],
+    "cptec_id":["224"],  
     "row":"20"
   },
   {
     "name":"GOIANIA",
     "region": "CO",    
-    "ws_id":["A002", "83423"],    
+    "ws_id":["A002", "83423"],
+    "cptec_id":["230"],    
     "row":"21"
   },
   {
     "name":"CAMPO GRANDE",
     "region": "CO",
-    "ws_id":["A702"],    
+    "ws_id":["A702"],
+    "cptec_id":["225"],    
     "row":"22"
   },
   {
     "name":"CUIABA",
     "region": "CO",
-    "ws_id":["A001", "83361"],   
+    "ws_id":["A001", "83361"],
+    "cptec_id":["226"],   
     "row":"23"
   },
   {
     "name":"PORTO VELHO",
     "region": "CO",
-    "ws_id": ["A925"],   
+    "ws_id": ["A925"],
+    "cptec_id":["238"],   
     "row":"24"
   },
   {
     "name":"RIO BRANCO",
     "region": "CO",
-    "ws_id": ["A104","82915"],    
+    "ws_id": ["A104","82915"],
+    "cptec_id":["240"],    
     "row":"25"
   }]
 }

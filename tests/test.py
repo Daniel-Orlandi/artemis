@@ -5,7 +5,7 @@ import artemis.core.response_handler as response_handler
 from artemis.core.http_engine import Request
 from artemis.core.data_extractor import Extractor
 from artemis.models.cptec import CptecApiSuite
-from utils import data_logger
+from artemis.utils import data_logger
 
 start = time.perf_counter()
 
@@ -17,8 +17,7 @@ asyncio.run(getter.get(method='async'))
 
 my_extractor = Extractor(data_dict)
 data_dict = my_extractor.get_data()
-workbook = my_extractor.load_sheet(
-    filename="Telecarga_SUL_2021-01-13 copy.xlsm", keep_vba=True, data_only=False)
+workbook = my_extractor.load_sheet(filename="Telecarga_SUL_2021-01-13 copy.xlsm", keep_vba=True, data_only=False)
 
 for key, value in data_dict.items():
     df = my_extractor.set_data(value)

@@ -15,7 +15,7 @@ def check_exists(filename: str = None, dir_path: str = None) -> bool:
   else:
     return False
 
-def check_d_type(data, fmt: str):
+def check_d_type(data, fmt):
   if (isinstance(data, fmt)):
     return True
   
@@ -24,18 +24,26 @@ def check_d_type(data, fmt: str):
 
 def check_date_format(date: str, date_format: str):
   try:
-        datetime.datetime.strptime(date, date_format)
+      datetime.datetime.strptime(date, date_format)
 
   except ValueError:
         raise ValueError(f'Incorrect data format, should be {date_format}')
 
 def set_date_from_today(**kwargs):
   today = datetime.date.today()
+
   return today + datetime.timedelta(**kwargs)  
 
-def read_json(filename: str):
+def read_json(filename: str) -> dict:
   with open(filename, 'r') as j:
     json_data = json.load(j)
+
     return json_data
 
+def merge_dict(dict_list: list) -> dict:
+  dict1 = {}
+  for dictionary in dict_list:
+    dict1.update(dictionary)
+    
+  return dict1
 

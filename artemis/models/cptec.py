@@ -1,11 +1,15 @@
-from .base import BaseModel
+import asyncio
+from artemis.models.base import BaseModelInterface
+from artemis.models.location_model import Location
+from artemis.utils import check_d_type
 
-
-class CptecApiSuite(BaseModel):     
-    BaseModel.base_url = "http://servicos.cptec.inpe.br/XML"
-    BaseModel.forecast_url = "/cidade/"
-
-    def get_forecast_by_date_delta(self, num_days: str) -> dict:
+class CptecApiSuite(BaseModelInterface):
+    def __init__(self, id_locale_list: list):
+        super().__init__(id_locale_list=id_locale_list)     
+        self.base_url = "http://servicos.cptec.inpe.br/XML"
+        self.forecast_url = "/cidade/"
+                
+    def get_forecast_by_date_delta(self, num_days: str) -> None:
         try:
             self.check_if_id_locale()
 
@@ -24,7 +28,7 @@ class CptecApiSuite(BaseModel):
                 url_dict[str(city_id)] = url
                 self.logger.info(url)
 
-            return url_dict
+            self.data_dict = url_dict
 
         except Exception as error:
             self.logger.error(f'Error: {error}')
@@ -36,3 +40,8 @@ class CptecApiSuite(BaseModel):
         url = self.base_url + final_url
         url_dict['current_weather_cond_capitals'] = url
         return url_dict
+    
+    
+
+
+

@@ -1,12 +1,10 @@
 import requests
 import httpx
 import asyncio
-import json
 from urllib.parse import urlparse
 
-import jxmlease
-from utils import data_logger
 from artemis.core import response_handler
+from artemis.utils.data_logger import Logger
 
 
 class Request:
@@ -42,9 +40,9 @@ class Request:
 
     def __init__(self, data_dict: dict) -> None:
         self.data_dict = data_dict
-        self.logger = data_logger.Logger().set_logger(__name__)
+        self.logger = Logger(logger_name=__name__).get_logger()
 
-    def get_data(self) -> dict:
+    def get_data_dict(self) -> dict:
         return self.data_dict
 
     @staticmethod
@@ -146,41 +144,32 @@ class Request:
                 return response.status_code
 
         except ValueError as not_json_error:
-            self.logger.warning(
-                f"Warning: {not_json_error}. trying to read response as xml")
+            self.logger.warning(f"Warning: {not_json_error}. trying to read response as xml")
 
             self.data_dict[key] = {'host': self.get_host(
                 str(response.url)), 'data': response_handler.xml_response(response.content)}
 
-            self.logger.warning(
-                f"Warning: read response as xml")
-
+            self.logger.warning(f"Warning: read response as xml")
             return response.status_code        
 
         except httpx.ConnectError as connection_error:
             self.logger.error(f"Error Connecting:{connection_error}")
-            raise connection_error
-
+            
         except httpx.TimeoutException as timeout_error:
             self.logger.error(f"Timeout Error:{timeout_error}")
-            raise timeout_error
-
+           
         except httpx.RequestError as request_error:
             self.logger.error(f"Request erros: {request_error}")
-            raise request_error
-
+           
         except httpx.HTTPError as http_error:
             self.logger.error(f"Http Error: {http_error}")
-            raise http_error
-
+            
         except RuntimeError as warning:
             self.logger.warning(f"Warning: {warning}")
-            pass
-
+            
         except Exception as general_error:
             self.logger.error(f"Ops Something Else: {general_error}")
-            raise general_error
-
+            
     async def get(self, method: str = "sync"):
         """
          Orchestrator for running either of the request method.
@@ -218,20 +207,22 @@ class Request:
                     task_list.append(result)
 
                 await asyncio.gather(*task_list)
+                self.logger.info("Done")
 
             elif (isinstance(method, str) and method == 'sync'):
                 self.logger.info("sync mode selected.")
 
                 for id_locale, url in self.data_dict.items():
                     self.sync_request(id_locale, url)
+                    self.logger.info("Done")
             
             else:
                 raise AttributeError("Method shoud be either sync or async.")
 
         except asyncio.CancelledError as cancelled_error:
-            self.logger.error(f'Cancelled error: {error}')
-            raise error
-
+            self.logger.error(f'Cancelled error: {cancelled_error}')            
+            
         except Exception as error:
             self.logger.error(f'Error: {error}')
-            raise error
+            
+            
