@@ -15,7 +15,9 @@ class Location:
     self.obs_max_temp = ["D", "F"]
     self.fcast_min_temp = ["G","I","K"]
     self.fcast_max_temp = ["H","J","L"]   
-    self.col_range_w_cond = ["M","N","O","P","Q","R","S","T","U","W","X","Y","Z","AA","AB","AD","AF","AG"]
+    self.cloud_cover_w_cond = ["M", "P", "S", "V", "Y", "AB"]
+    self.precip_w_cond = ["N", "Q", "T", "W", "Z", "AC"]
+    self.period_w_cond = ["O", "R", "U", "X", "AA", "AD"]     
     self.data = {}
   
   def set_location(self,location_dict: dict):

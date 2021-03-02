@@ -1,0 +1,48 @@
+{
+  "nebulosidade" : ["céu claro",
+                    "claro apresentando períodos de nublado",
+                    "claro apresentando períodos de parcialmente nublado",
+                    "claro passando a nublado",
+                    "claro passando a parcialmente nublado",
+                    "nebulosidade variável",
+                    "nublado",
+                    "nublado passando a claro",
+                    "nublado passando a parcialmente nublado",
+                    "nublado apresentando períodos de parcialmente nublado",
+                    "parcialmente nublado",
+                    "parcialmente nublado apresentando períodos de claro",
+                    "parcialmente nublado apresentando períodos de nublado",
+                    "parcialmente nublado passando a claro",
+                    "parcialmente nublado passando a nublado"
+    ],
+
+    "precipitacao" : ["chuvisco",
+                      "chuvisco/chuva fraca",
+                      "chuvisco isolado",
+                      "chuva forte",
+                      "chuva fraca",
+                      "chuva fraca isolada",
+                      "chuva fraca com períodos de moderada",
+                      "chuva moderada",
+                      "chuva moderada com períodos de forte",
+                      "pancadas de chuva"
+    ],
+
+    "periodo": ["ao longo do dia",
+                "madrugada",
+                "madrugada até a tarde",
+                "madrugada e manhã",
+                "madrugada/tarde",
+                "madrugada/tarde e noite",
+                "madrugada e manhã/noite",
+                "manhã",
+                "manhã até a noite",
+                "manhã/noite",
+                "manhã e tarde",
+                "noite",
+                "noite e madrugada",
+                "tarde",
+                "tarde e noite"
+    ]
+}
+

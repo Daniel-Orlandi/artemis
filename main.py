@@ -11,7 +11,7 @@ logger.info('Beggining aplication.')
 
 logger.info('Reading config files.')
 configs = utils.read_json('resources/config_files/config.json')
-
+wconfigs = utils.read_json('resources/config_files/weather_cond_combos.json')
 logger.info('Initializing aplication.')
 my_worker = Carga(date_begin=(datetime.today() - timedelta(1)).strftime('%Y-%m-%d'),
                             date_end=datetime.today().strftime('%Y-%m-%d'),
@@ -19,7 +19,10 @@ my_worker = Carga(date_begin=(datetime.today() - timedelta(1)).strftime('%Y-%m-%
                             input_excel_file_list=configs['files']['excel_input_files_list'],
                             output_excel_file_list=configs['files']['excel_output_files_list'],
                             obs_host_list=configs['hosts']['obs_host_list'], 
-                            fcast_host_list=configs['hosts']['fcast_host_list'])
+                            fcast_host_list=configs['hosts']['fcast_host_list'],
+                            cloud_cover_wcond_list=wconfigs['nebulosidade'],
+                            precipitation_wcond_list=wconfigs['precipitacao'],
+                            period_wcond_list=wconfigs['periodo'])
 
 
 logger.info('Setting locations.')

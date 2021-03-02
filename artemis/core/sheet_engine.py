@@ -10,6 +10,56 @@ from openpyxl.worksheet.datavalidation import DataValidation
 
 
 class WorkBook:
+    """
+        class to provide methods to write data to excel files         
+
+    Attributes
+    ----------
+    __data_workbook = None
+        openpyxl object representing excel file.
+
+    __active_table = None
+        openpyxl object representing selected table in excel file.          
+
+    self.__data_frame: pandas.DataFrame
+        dataframe where data will be stored after processing.
+
+    self.__location_list: list of Location objects
+        data from dataframe will be location-wise
+        selected and stored in location objects
+
+    self.logger: utils.data_logger
+        logger initializator
+
+    self.todays_date 
+        
+    Returns
+    ----------
+    None
+
+    Methods
+    ----------
+    get_workbook(self):
+
+    get_active_table(self):
+
+    get_location_list(self):
+
+    to_xlsx(workbook, dataframe, data_type: str):
+
+    set_date_cell(self, date: str, pos_in_table: str):
+
+    set_cell(self, data_list :list, pos_in_table_list: list):
+
+    set_active_table(self, table_name: str):
+
+    write_data_to_table(self):
+
+    load_sheet(self, **kwargs) -> None:
+
+    save_sheet(self, workbook, out_file: str):   
+
+    """
     def __init__(self, filename: str, location_list: list) -> None:
         self.filename = filename
         self.__data_workbook = None
@@ -60,9 +110,10 @@ class WorkBook:
         except Exception as error:
             raise error
     
-    def add_drop_down(self, list):
-        pass
-
+    def add_drop_down(self, position:str):
+        data_val = DataValidation(type='list', formula1=position)
+        self.__active_table.add_data_validation(data_val)
+        return data_val
 
     def set_date_cell(self, date: str, pos_in_table: str):
         check_d_type(pos_in_table,str)
@@ -92,17 +143,7 @@ class WorkBook:
         else:
             self.__data_workbook.create_sheet(table_name) 
                    
-        self.__active_table = self.__data_workbook[table_name]
-
-    def write_data_to_table(self):
-        try:
-            for location in self.__location_list:
-                pos_in_table_list = list(location.data.keys())
-                data_list = list(location.data.values())
-                self.set_cell(data_list, pos_in_table_list)
-        
-        except Exception as general_error:
-            self.logger.error(f'Error: {general_error}')            
+        self.__active_table = self.__data_workbook[table_name]             
 
     def load_sheet(self, **kwargs) -> None:
         try:

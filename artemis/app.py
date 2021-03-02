@@ -19,6 +19,9 @@ class Carga:
                input_excel_file_list:list,
                output_excel_file_list:list,
                obs_host_list:list,
+               cloud_cover_wcond_list:list,
+               precipitation_wcond_list:list,
+               period_wcond_list:list,
                fcast_host_list:list ) -> None:
 
       self.date_begin = date_begin
@@ -27,6 +30,9 @@ class Carga:
       self.input_excel_file_list = input_excel_file_list
       self.output_excel_file_list = output_excel_file_list
       self.obs_host_list = obs_host_list
+      self.cloud_cover_wcond_list = cloud_cover_wcond_list
+      self.precipitation_wcond_list = precipitation_wcond_list
+      self.period_wcond_list = period_wcond_list
       self.fcast_host_list = fcast_host_list
       self.__location_list = None
       self.__data_dict = None
@@ -46,12 +52,49 @@ class Carga:
   @staticmethod
   def read_location_file(location_json_dict:str, query:str = 'cities') -> list:
     location_list = []
+
     for city in location_json_dict[query]:
       my_location = Location()
       my_location.set_location(city)
       location_list.append(my_location)
     
     return location_list
+
+  @staticmethod
+  def add_combo(workbook, wcond_list: list, combo_position_in_table_list:list, combo_position_in_table:str, dropdown_position):      
+      workbook.set_cell(wcond_list, combo_position_in_table_list)
+      data_val = workbook.add_drop_down(position=combo_position_in_table)
+      data_val.add(workbook.get_active_table[dropdown_position])
+  
+  def write_data_to_table(self, workbook):
+        try:
+            for location in self.__location_list:
+                pos_in_table_list = list(location.data.keys())
+                data_list = list(location.data.values())
+                workbook.set_cell(data_list, pos_in_table_list)
+                row = str(location.row)
+                #adicona os combos necessários nas posições
+                [self.add_combo(workbook,
+                                self.cloud_cover_wcond_list,
+                                combo_position_in_table_list = [f'C{str(pos)}' for pos in range(20, 20 + len(self.cloud_cover_wcond_list))] ,
+                                combo_position_in_table="=C20:C34",
+                                dropdown_position=pos_in_loc+row) for pos_in_loc in location.cloud_cover_w_cond]                 
+
+                [self.add_combo(workbook,
+                                self.precipitation_wcond_list,
+                                combo_position_in_table_list = [f'D{str(pos)}' for pos in range(20, 20 + len(self.precipitation_wcond_list))],
+                                combo_position_in_table="=D20:D34",
+                                dropdown_position=pos_in_loc+row) for pos_in_loc in location.precip_w_cond]
+
+                [self.add_combo(workbook,
+                                self.period_wcond_list,
+                                combo_position_in_table_list = [f'E{str(pos)}' for pos in range(20, 20 + len(self.period_wcond_list))] ,
+                                combo_position_in_table="=E20:E34",
+                                dropdown_position=pos_in_loc+row) for pos_in_loc in location.period_w_cond]
+        
+        except Exception as general_error:
+            self.logger.error(f'Error: {general_error}')
+            raise general_error     
 
   def set_locations(self, file):
     try:
@@ -125,13 +168,13 @@ class Carga:
       my_workbook = WorkBook(location_list=self.__location_list, filename=input_filename)
       my_workbook.load_sheet(keep_vba=True)
       my_workbook.set_active_table("Tabela")
-      my_workbook.set_date_cell(self.date_end, "A1")
-      my_workbook.write_data_to_table() 
+      my_workbook.set_date_cell(self.date_end, "A1")      
+      self.write_data_to_table(my_workbook) 
       my_workbook.save_sheet(my_workbook.get_workbook, save_filename + self.date_end +'.xlsm')
 
     except Exception as general_error:
       self.logger.error(f'General error: {general_error}') 
-      raise general_error
+      raise general_error  
     
   def multi_run(self, data_list:list, func) -> list:
      self.logger.info("Multi-run method called. Running")

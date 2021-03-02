@@ -1,6 +1,6 @@
 {
   "files":{
-    "location_file_list":["/mnt/d/danie/work/projects/active/artemis/resources/sul.json"],
+    "location_file_list":["/mnt/d/danie/work/projects/active/artemis/resources/sul.json"],    
     "excel_input_files_list":["/mnt/d/danie/work/projects/active/artemis/data/input_data/Telecarga_SUL_.xlsm"],
     "excel_output_files_list":["/mnt/d/danie/work/projects/active/artemis/data/Telecarga_SUL_"]
   },
