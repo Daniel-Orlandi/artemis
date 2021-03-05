@@ -1,0 +1,32 @@
+{
+  "cities":
+  [{
+    "name":"SAO PAULO",
+    "region": "SE",
+    "ws_id": ["A771", "A701", "83781","83004"],    
+    "cptec_id":[ "244"],
+    "row":"6"
+  },
+  {
+    "name":"RIO DE JANEIRO",
+    "region": "SE",    
+    "ws_id":["A652", "A636", "A621", "82900"],    
+    "cptec_id":["241"],
+    "row":"8"
+  },
+  {
+    "name":"VITORIA",
+    "region": "SE",
+    "ws_id":["A612", "83648"],    
+    "cptec_id":["246"],
+    "row":"10"
+  },
+  {
+    "name":"BELO HORIZONTE",
+    "region": "SE",
+    "ws_id":["A521", "83587", "F501"],   
+    "cptec_id":["222"],
+    "row":"12"
+  }
+  ]
+}

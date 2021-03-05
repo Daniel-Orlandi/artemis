@@ -1,0 +1,52 @@
+{
+  "cities":
+  [{
+    "name":"SALVADOR",
+    "region": "NE",
+    "ws_id": ["A401","83229"], 
+    "cptec_id":["242"],   
+    "row":"6"
+  },
+  {
+    "name":"RECIFE",
+    "region": "NE",    
+    "ws_id":["A301", "82900"],
+    "cptec_id":["239"],    
+    "row":"8"
+  },
+  {
+    "name":"FORTALEZA",
+    "region": "NE",
+    "ws_id":["A305", "82397"], 
+    "cptec_id":["229"],   
+    "row":"10"
+  },
+  {
+    "name":"BELEM",
+    "region": "N",
+    "ws_id":["A201", "82191"],
+    "cptec_id":["221"],   
+    "row":"14"
+  },
+  {
+    "name":"MANAUS",
+    "region": "N",
+    "ws_id": ["A101", "82331"],
+    "cptec_id":["234"],   
+    "row":"16"
+  },
+  {
+    "name":"SAO LUIS",
+    "region": "N",
+    "ws_id": ["A203","82280"],
+    "cptec_id":["243"],    
+    "row":"18"
+  },
+  {
+    "name":"BOA VISTA",
+    "region": "N",
+    "ws_id": ["A135","82024"],
+    "cptec_id":["223"],    
+    "row":"20"
+  }]
+}

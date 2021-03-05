@@ -76,20 +76,20 @@ class Carga:
                 #adicona os combos necessários nas posições
                 [self.add_combo(workbook,
                                 self.cloud_cover_wcond_list,
-                                combo_position_in_table_list = [f'C{str(pos)}' for pos in range(20, 20 + len(self.cloud_cover_wcond_list))] ,
-                                combo_position_in_table="=C20:C34",
+                                combo_position_in_table_list = [f'C{str(pos)}' for pos in range(30, 30 + len(self.cloud_cover_wcond_list))] ,
+                                combo_position_in_table="=$C$30:$C$44",
                                 dropdown_position=pos_in_loc+row) for pos_in_loc in location.cloud_cover_w_cond]                 
 
                 [self.add_combo(workbook,
                                 self.precipitation_wcond_list,
-                                combo_position_in_table_list = [f'D{str(pos)}' for pos in range(20, 20 + len(self.precipitation_wcond_list))],
-                                combo_position_in_table="=D20:D34",
+                                combo_position_in_table_list = [f'D{str(pos)}' for pos in range(30, 30 + len(self.precipitation_wcond_list))],
+                                combo_position_in_table="=$D$30:$D$44",
                                 dropdown_position=pos_in_loc+row) for pos_in_loc in location.precip_w_cond]
 
                 [self.add_combo(workbook,
                                 self.period_wcond_list,
-                                combo_position_in_table_list = [f'E{str(pos)}' for pos in range(20, 20 + len(self.period_wcond_list))] ,
-                                combo_position_in_table="=E20:E34",
+                                combo_position_in_table_list = [f'E{str(pos)}' for pos in range(30, 30 + len(self.period_wcond_list))] ,
+                                combo_position_in_table="=$E$30:$E$44",
                                 dropdown_position=pos_in_loc+row) for pos_in_loc in location.period_w_cond]
         
         except Exception as general_error:
