@@ -254,8 +254,11 @@ class Extractor:
         else:
             raise TypeError("mode must be a str and equal to TEMP_MAX or TEMP_MIN.")
                             
-        return result    
-    
+        return result
+    @staticmethod    
+    def normalize_location_names(dataframe: pandas.DataFrame, search_col:str, location_name: str) -> pandas.DataFrame:
+         dataframe.loc[dataframe[search_col].str.contains(location_name), search_col] = location_name
+             
     def set_site(self, data_dict: dict) -> pandas.DataFrame:
         """
          method responsible for identify the given host and location(weather station, etc), 
@@ -348,7 +351,8 @@ class Extractor:
 
         #Mudando dtypr de str para float nas colunas 'TEMP_MAX' e 'TEMP_MIN'
         result[['TEMP_MAX', 'TEMP_MIN']] = result[['TEMP_MAX', 'TEMP_MIN']].apply(pandas.to_numeric)
-        
+        [self.normalize_location_names(dataframe=result,search_col = 'CIDADE', location_name = location.name) for location in self.__location_list]
+
         #Pegando temps max e min
         temp_min = self.get_temp(result, 'TEMP_MIN').drop_duplicates()
         temp_min.drop(columns={'CD_ESTACAO_min'}, inplace=True)
@@ -365,9 +369,9 @@ class Extractor:
         result.set_index('DATA', inplace=True)        
         result.sort_index(inplace=True)   
         result = result[['CIDADE', 'TEMP_MAX','TEMP_MIN']]
-        self.__data_frame = result.drop_duplicates()
-        print (self.__data_frame)
-
+        self.__data_frame = result.drop_duplicates()        
+        print(self.__data_frame)
+        
         #Escreve os dados em location.data, dicionário utilizado para escrever na planilha excel.
         for location in self.__location_list:            
             data = self.__data_frame[self.__data_frame['CIDADE'] == location.name]            
