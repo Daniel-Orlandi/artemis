@@ -1,6 +1,6 @@
 from artemis import utils
 import sys
-import os
+import pathlib
 from logging.handlers import TimedRotatingFileHandler
 import logging.config
 
@@ -30,14 +30,17 @@ class Logger:
 
     def __init__(self, logger_name:str, filename:str = None, log_format: str = None):
         self.logger_name = logger_name
-        self.logger = None
+        self.logger = None        
         
         if (isinstance(filename, str)):
             self.filename = filename
 
         else:
-            if(utils.check_exists("data/logs/log_file.log") == False):
-                os.mkdir("data/logs/")
+            self.filename = "data/logs/log_file.log"
+            if(utils.check_exists(self.filename) == False):
+                path = os.path.dirname(self.filename)
+                path = pathlib.Path(path)
+                path.parent.mkdir(parents=True, exist_ok=True) 
                 open("log_file.log","x")
 
             self.filename = "data/logs/log_file.log"
@@ -48,7 +51,7 @@ class Logger:
         else:
             pass
        
-        logging.config.fileConfig("resources/config_files/logger_config.conf")
+        logging.config.fileConfig("/home/mdata/daniel/artemis/resources/config_files/logger_config.conf")
         self.logger = logging.getLogger(self.logger_name)
 
     def get_logger(self):    

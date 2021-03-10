@@ -1,3 +1,5 @@
-#!/bin/bash
-source activate base
-python /mnt/d/work/code_projects/active/weather_data_getter/main.py
+#!/bin/sh
+source /opt/conda/bin/activate
+conda activate carga
+python /home/mdata/daniel/artemis/main.py
+conda deactivate

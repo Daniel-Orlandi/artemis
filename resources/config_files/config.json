@@ -1,19 +1,19 @@
 {
   "files":{
-    "location_file_list":["/mnt/d/work/code_projects/active/weather_data_getter/resources/sul.json",
-                          "/mnt/d/work/code_projects/active/weather_data_getter/resources/co.json",
-                          "/mnt/d/work/code_projects/active/weather_data_getter/resources/locations_N-NE.json",
-                          "/mnt/d/work/code_projects/active/weather_data_getter/resources/locations_SE.json"],
+    "location_file_list":["/home/mdata/daniel/artemis/resources/sul.json",
+                          "/home/mdata/daniel/artemis/resources/co.json",
+                          "/home/mdata/daniel/artemis/resources/locations_N-NE.json",
+                          "/home/mdata/daniel/artemis/resources/locations_SE.json"],
 
-    "excel_input_files_list":["/mnt/d/work/code_projects/active/weather_data_getter/data/input_files/Telecarga_SUL_.xlsm",
-                              "/mnt/d/work/code_projects/active/weather_data_getter/data/input_files/Telecarga_CO_.xlsm",
-                              "/mnt/d/work/code_projects/active/weather_data_getter/data/input_files/Telecarga_NE_N_.xlsm",
-                              "/mnt/d/work/code_projects/active/weather_data_getter/data/input_files/Telecarga_SE_.xlsm"],
+    "excel_input_files_list":["/home/mdata/daniel/artemis/data/input_files/Telecarga_SUL_.xlsm",
+                              "/home/mdata/daniel/artemis/data/input_files/Telecarga_CO_.xlsm",
+                              "/home/mdata/daniel/artemis/data/input_files/Telecarga_NE_N_.xlsm",
+                              "/home/mdata/daniel/artemis/data/input_files/Telecarga_SE_.xlsm"],
 
-    "excel_output_files_list":["/mnt/d/work/code_projects/active/weather_data_getter/data/result/Telecarga_SUL_",
-                               "/mnt/d/work/code_projects/active/weather_data_getter/data/result/Telecarga_CO_",
-                               "/mnt/d/work/code_projects/active/weather_data_getter/data/result/Telecarga_NE_N_",
-                               "/mnt/d/work/code_projects/active/weather_data_getter/data/result/Telecarga_SE_"]
+    "excel_output_files_list":["/home/mdata/daniel/artemis/data/result/Telecarga_SUL_",
+                               "/home/mdata/daniel/artemis/data/result/Telecarga_CO_",
+                               "/home/mdata/daniel/artemis/data/result/Telecarga_NE_N_",
+                               "/home/mdata/daniel/artemis/data/result/Telecarga_SE_"]
   },
   "dates":{
     "date_begin":"2021-02-23",

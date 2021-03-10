@@ -3,7 +3,6 @@ import json
 from pathlib import Path
 
 def check_exists(filename: str = None, dir_path: str = None) -> bool:
-
   if(isinstance(filename, str)):
     if (Path(filename).is_file()):
       return True    
