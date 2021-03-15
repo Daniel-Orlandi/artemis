@@ -19,14 +19,14 @@
     "region": "SE",
     "ws_id":["A612", "83648"],    
     "cptec_id":["246"],
-    "row":"10"
+    "row":"12"
   },
   {
     "name":"BELO HORIZONTE",
     "region": "SE",
     "ws_id":["A521", "83587", "F501"],   
     "cptec_id":["222"],
-    "row":"12"
+    "row":"10"
   }
   ]
 }
