@@ -10,8 +10,8 @@ logger = data_logger.Logger(__name__).get_logger()
 logger.info('Beggining aplication.')
 
 logger.info('Reading config files.')
-configs = utils.read_json('/home/mdata/daniel/artemis/resources/config_files/config.json')
-wconfigs = utils.read_json('/home/mdata/daniel/artemis/resources/config_files/weather_cond_combos.json')
+configs = utils.read_json('/home/mdata/planilhas_carga/carga/resources/config_files/config.json')
+wconfigs = utils.read_json('/home/mdata/planilhas_carga/carga/resources/config_files/weather_cond_combos.json')
 logger.info('Initializing aplication.')
 my_worker = Carga(date_begin=(datetime.today() - timedelta(1)).strftime('%Y-%m-%d'),
                             date_end=datetime.today().strftime('%Y-%m-%d'),
