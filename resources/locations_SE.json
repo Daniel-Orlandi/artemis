@@ -15,6 +15,13 @@
     "row":"8"
   },
   {
+    "name":"BELO HORIZONTE",
+    "region": "SE",
+    "ws_id":["A521", "83587", "F501"],   
+    "cptec_id":["222"],
+    "row":"10"
+  },
+  {
     "name":"VITORIA",
     "region": "SE",
     "ws_id":["A612", "83648"],    
@@ -22,11 +29,46 @@
     "row":"12"
   },
   {
-    "name":"BELO HORIZONTE",
+    "name":"SP LESTE E REGIAO LITORANEA",
+    "region": "SE",
+    "ws_id": [],    
+    "cptec_id":[],
+    "row":"13"
+  },
+  {
+    "name":"SP INTERIOR - REGIAO CENTRAL",
+    "region": "SE",    
+    "ws_id":[],    
+    "cptec_id":[],
+    "row":"14"
+  },  
+  {
+    "name":"SP INTERIOR - REGIAO OESTE",
+    "region": "SE",
+    "ws_id":[],   
+    "cptec_id":[],
+    "row":"15"
+  },
+  {
+    "name":"RJ DEMAIS REGIÕES",
+    "region": "SE",    
+    "ws_id":[],    
+    "cptec_id":[],
+    "row":"16"
+  },
+  {
+    "name":"MG DEMAIS REGIÕES",
+    "region": "SE",
+    "ws_id":[],    
+    "cptec_id":[],
+    "row":"17"
+  },
+  {
+    "name":"ES DEMAIS REGIÕES",
     "region": "SE",
     "ws_id":["A521", "83587", "F501"],   
     "cptec_id":["222"],
-    "row":"10"
+    "row":"18"
   }
   ]
 }
