@@ -51,7 +51,7 @@ class Logger:
         else:
             pass
        
-        logging.config.fileConfig("/home/mdata/planilhas_carga/carga/resources/config_files/logger_config.conf")
+        logging.config.fileConfig("resources/config_files/logger_config.conf")
         self.logger = logging.getLogger(self.logger_name)
 
     def get_logger(self):    

@@ -1,19 +1,19 @@
 {
   "files":{
-    "location_file_list":["/home/mdata/planilhas_carga/carga/resources/sul.json",
-                          "/home/mdata/planilhas_carga/carga/resources/co.json",
-                          "/home/mdata/planilhas_carga/carga/resources/locations_N-NE.json",
-                          "/home/mdata/planilhas_carga/carga/resources/locations_SE.json"],
+    "location_file_list":["resources/sul.json",
+                          "resources/co.json",
+                          "resources/locations_N-NE.json",
+                          "resources/locations_SE.json"],
 
-    "excel_input_files_list":["/home/mdata/planilhas_carga/carga/data/input_files/Telecarga_SUL_.xlsm",
-                              "/home/mdata/planilhas_carga/carga/data/input_files/Telecarga_CO_.xlsm",
-                              "/home/mdata/planilhas_carga/carga/data/input_files/Telecarga_NE_N_.xlsm",
-                              "/home/mdata/planilhas_carga/carga/data/input_files/Telecarga_SE_.xlsm"],
+    "excel_input_files_list":["data/input_files/Telecarga_SUL_.xlsm",
+                              "data/input_files/Telecarga_CO_.xlsm",
+                              "data/input_files/Telecarga_NE_N_.xlsm",
+                              "data/input_files/Telecarga_SE_.xlsm"],
 
-    "excel_output_files_list":["/home/mdata/planilhas_carga/carga_diaria/Telecarga_SUL_",
-                               "/home/mdata/planilhas_carga/carga_diaria/Telecarga_CO_",
-                               "/home/mdata/planilhas_carga/carga_diaria/Telecarga_NE_N_",
-                               "/home/mdata/planilhas_carga/carga_diaria/Telecarga_SE_"]
+    "excel_output_files_list":["data/result/Telecarga_SUL_",
+                               "data/result/Telecarga_CO_",
+                               "data/result/Telecarga_NE_N_",
+                               "data/result/Telecarga_SE_"]
   },
   "dates":{
     "date_begin":"2021-02-23",
