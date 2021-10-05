@@ -4,42 +4,48 @@
     "name":"PORTO ALEGRE",
     "region": "SUL",
     "ws_id": ["A801","83967"],
-    "cptec_id":["237"],  
+    "cptec_id":["237"],
+    "icao_id":["SBPA"], 
     "row":"6"
   },
   {
     "name":"FLORIANOPOLIS",
     "region": "SUL",    
     "ws_id":["A806"],
-    "cptec_id":["228"],    
+    "cptec_id":["228"],
+    "icao_id":["SBFL"],    
     "row":"9"
   },
   {
     "name":"CURITIBA",
     "region": "SUL",
     "ws_id":["A807", "83842"],
-    "cptec_id":["227"],    
+    "cptec_id":["227"],
+    "icao_id":["SBCT"],    
     "row":"12"
   },
   {
     "name":"MARINGA",
     "region": "SUL",
     "ws_id":["A835", "83767"],
-    "cptec_id":["3161"],   
+    "cptec_id":["3161"],
+    "icao_id":["SBMG"],   
     "row":"14"
   },
   {
     "name":"LONDRINA",
     "region": "SUL",
     "ws_id": ["A925", "83766"],
-    "cptec_id":["2993"],   
+    "cptec_id":["2993"],
+    "icao_id":["SBLO"],   
     "row":"15"
   },
   {
     "name":"FOZ DO IGUACU",
     "region": "SUL",
     "ws_id": ["A846"],
-    "cptec_id":["2053"],    
+    "cptec_id":["2053"],
+    "icao_id":["SBFI"],    
     "row":"16"
   }]
 }
